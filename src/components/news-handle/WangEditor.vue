@@ -1,0 +1,211 @@
+<template>
+    <div class="editor" v-loading="isLoading">
+        <div ref="toolbar" class="toolbar">
+        </div>
+        <div ref="editor" class="text">
+        </div>
+    </div>
+</template>
+
+<script>
+    import E from 'wangeditor'
+
+    export default {
+        name: "WangEditor",
+        data() {
+            return {
+                // uploadPath,
+                editor: null,
+                info_: "",
+                isLoading: false,
+                addImgArr: [], // 往富文本里添加的图片
+                removeImgArr: []
+            }
+        },
+        model: {
+            prop: 'value',
+            event: 'change'
+        },
+        props: {
+            value: {
+                type: String,
+                default: ''
+            },
+            isClear: {
+                type: Boolean,
+                default: false
+            },
+            getEdithorContent: Function
+        },
+        watch: {
+            isClear(val) {
+                // 触发清除文本域内容
+                if (val) {
+                    this.editor.txt.clear()
+                    this.info_ = null
+                }
+            },
+            info_: {
+                handler(value) {
+                    let index = 0;
+                    while ((index = value.indexOf("<img", index + 3)) != -1) {
+                        let start = value.indexOf("http", index)
+                        let end = value.indexOf("\"", start + 1)
+                        let string = value.substring(start, end)
+                        if (this.addImgArr.length > 0) {
+                            this.addImgArr.forEach(item => {
+                                let flag = true;
+                                this.addImgArr.forEach(i => {
+                                    if (string == i) {
+                                        flag = false;
+                                    }
+                                })
+                                if (flag) {
+                                    this.addImgArr.push(string)
+
+                                }
+                            })
+                        } else {
+                            this.addImgArr.push(string)
+                        }
+                    }
+                }
+                //value为编辑框输入的内容，这里我监听了一下值，当父组件调用得时候，如果给value赋值了，子组件将会显示父组件赋给的值
+            },
+            value: {
+                handler(value) {
+                    if (this.editor != null) {
+                        this.editor.txt.html(value)
+                    }
+                },
+                immediate: true
+            }
+        },
+        mounted() {
+            this.seteditor()
+        },
+        methods: {
+            seteditor() {
+                // http://192.168.2.125:8080/admin/storage/create
+                this.editor = new E(this.$refs.toolbar, this.$refs.editor)
+                this.editor.config.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
+                this.editor.config.uploadImgMaxLength = 1 // 限制一次最多上传 3 张图片
+                this.editor.config.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
+                // 配置菜单
+                this.editor.config.menus = [
+                    'head',
+                    'bold',
+                    'fontSize',
+                    'fontName',
+                    'italic',
+                    'underline',
+                    'strikeThrough',
+                    'indent',
+                    'lineHeight',
+                    'foreColor',
+                    'backColor',
+                    'link',
+                    'list',
+                    'todo',
+                    'justify',
+                    'quote',
+                    'emoticon',
+                    'image',
+                    'video',
+                    'table',
+                    'code',
+                    'splitLine',
+                    'undo',
+                    'redo',
+                ]
+
+                this.editor.config.uploadImgHooks = {
+                    fail: (xhr, editor, result) => {
+                        // 插入图片失败回调
+                        this.$message.error("图片上传失败，请联系管理员！！")
+                    },
+                    timeout: (xhr, editor) => {
+                        // 网络超时的回调
+                        this.$message.error("网络开小差啦！")
+                    },
+                    error: (xhr, editor) => {
+                        // 图片上传错误的回调
+                        this.$message.error("图片上传失败，请重新上传")
+                    },
+                    customInsert: (insertImg, result, editor) => {
+                        // 图片上传成功，插入图片的回调
+                        //result为上传图片成功的时候返回的数据，这里我打印了一下发现后台返回的是data：[{url:"路径的形式"},...]
+                        // console.log(result.data[0].url)
+                        //insertImg()为插入图片的函数
+                        //循环插入图片
+                        // for (let i = 0; i < 1; i++) {
+                        // console.log(result)
+                        // }
+                    }
+                }
+                this.editor.config.customUploadImg = (resultFiles, insertImgFn) => {
+                    // resultFiles 是 input 中选中的文件列表
+                    // insertImgFn 是获取图片 url 后，插入到编辑器的方法
+                    var formData = new FormData();
+                    this.isLoading = true;
+                    formData.append("file", resultFiles[0])
+                    this.axios.post('/News/getNewsImgUrl', formData, {
+                        headers: {'Content-Type': 'multipart/form-data'},
+                    }).then((res) => {
+                        if (res.status == 200 && res.data.errno == 0) {
+                            this.addImgArr.push(res.data.data[0])
+                            insertImgFn(res.data.data)
+                        }
+                    }).catch(() => {
+                        this.isLoading = false;
+                    })
+                    // 上传图片，返回结果，将图片插入到编辑器中
+                    // insertImgFn(imgUrl)
+                }
+                this.editor.config.onchange = (html) => {
+                    if (html == "") return
+                    console.log(html)
+                    this.info_ = html // 绑定当前逐渐地值
+                    this.addImgArr.forEach(i => {
+                        let flag = true;
+                        if (this.info_.indexOf(i) == -1) {
+                            this.removeImgArr.forEach(item => {
+                                if (item == i) {
+                                    flag = false
+                                }
+                            })
+                            if (flag) {
+                                this.removeImgArr.push(i)
+                                this.axios.post("/News/delete", {
+                                    fileUrls: i
+                                })
+                            }
+                        }
+                    })
+                    this.getEdithorContent(this.info_, this.removeImgArr)
+                }
+                this.editor.config.showFullScreen = true
+                // 创建富文本编辑器
+                this.editor.create()
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .editor {
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+        z-index: 0;
+    }
+
+    .toolbar {
+        border: 1px solid #ccc;
+    }
+
+    .text {
+        border: 1px solid #ccc;
+        min-height: 500px;
+    }
+</style>

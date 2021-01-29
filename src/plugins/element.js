@@ -1,0 +1,91 @@
+import Vue from 'vue'
+import {
+    Button,
+    Container,
+    Aside,
+    Header,
+    Main,
+    Breadcrumb,
+    BreadcrumbItem,
+    Tag,
+    Dropdown,
+    Badge,
+    Avatar,
+    DropdownMenu,
+    DropdownItem,
+    Menu,
+    MenuItem,
+    Submenu,
+    MenuItemGroup,
+    Tooltip,
+    Table,
+    TableColumn,
+    Popover,
+    Pagination,
+    Row,
+    Col,
+    Carousel,
+    CarouselItem,
+    Form,
+    FormItem,
+    Input,
+    Link,
+    Progress,
+    Dialog,
+    Loading,
+    Select,
+    Option,
+    Image,
+    Upload,
+    ButtonGroup,
+    DatePicker,
+    TimePicker,
+    Card,
+    Tabs,
+    TabPane
+} from 'element-ui'
+
+
+Vue.use(TabPane)
+Vue.use(Tabs)
+Vue.use(Card)
+Vue.use(DatePicker)
+Vue.use(TimePicker)
+Vue.use(ButtonGroup)
+Vue.use(Upload)
+Vue.use(Image)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Popover)
+Vue.use(Pagination)
+Vue.use(Tooltip)
+Vue.use(Button)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(MenuItemGroup)
+Vue.use(Container)
+Vue.use(Aside)
+Vue.use(Header)
+Vue.use(Main)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
+Vue.use(Tag)
+Vue.use(Dropdown)
+Vue.use(Badge)
+Vue.use(Avatar)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
+Vue.use(Link)
+Vue.use(Progress)
+Vue.use(Dialog)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
+Vue.use(Loading)
