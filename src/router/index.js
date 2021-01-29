@@ -40,6 +40,7 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
+                            localStorage.removeItem("token")
                             next()
                         } else {
                             next('/home')
@@ -77,6 +78,7 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
+                            localStorage.removeItem("token")
                             next()
                         } else {
                             next('/home')
@@ -130,6 +132,7 @@ const routes = [
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
                             this.$message.error("登录失效")
+                            localStorage.removeItem("token")
                             next("/login/common")
                         } else {
                             this.$message.success("登录成功")
