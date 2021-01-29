@@ -38,7 +38,7 @@
                 </el-submenu>
             </el-menu>
         </el-col>
-        <el-col :lg="4" :md="6" :sm="8" :xs="0" v-if="$route.path.indexOf('/login')!=-1?false:(isLogin?false:true)">
+        <el-col :lg="4" :md="6" class="hidden-sm-only hidden-xs-only" v-if="$route.path.indexOf('/login')!=-1?false:(isLogin?false:true)">
             <el-button round class="loginBtn" icon="el-icon-s-custom" @click="$router.push('/login/common')">登录
             </el-button>
             <el-button type="primary" round class="registerBtn" icon="el-icon-edit-outline"

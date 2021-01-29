@@ -8,23 +8,7 @@
                 <el-tag style="margin-top: 15px" :type="flag?'':'info'">{{time}}</el-tag>
             </div>
             <div class="right">
-                <el-badge is-dot class="hidden-xs-only">
-                    <el-dropdown trigger="hover" style="font-size: 16px;">
-                <span class="el-dropdown-link">
-                    消息<i class="el-icon-bell el-icon--right"></i>
-                </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item class="clearfix">
-                                评论
-                                <el-badge class="mark" :value="12"/>
-                            </el-dropdown-item>
-                            <el-dropdown-item class="clearfix">
-                                回复
-                                <el-badge class="mark" :value="3"/>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </el-badge>
+                <MessageBadge :user-type="userType" :color="textColor" :userID="userID"/>
                 <span class="username">
                     <span v-if="userType=='管理员'">管理员：</span>
                     {{username}}
@@ -49,10 +33,12 @@
 
 <script>
     import {Message} from 'element-ui'
-
+    import MessageBadge from "./MessageBadge";
     export default {
         name: "Myheader",
-
+        components:{
+            MessageBadge
+        },
         props: {
             username: String,
             userMenuList: Array,
@@ -63,21 +49,21 @@
             bgc:String,
             textColor:String,
             activeColor:String,
-            flag:Boolean
+            flag:Boolean,
+            userID:String
         },
 
         data: function () {
             return {
                 time: "",
                 dialogVisible: false,
-                hour:0
+                hour:0,
             }
         },
         mounted: function () {
             this.getTime()
             setInterval(this.getTime, 1000)
             this.updateView(new Date().getHours())
-            // setInterval(this.updateView(this.hour), 1000 * 60)
         },
         methods: {
             getDays(days) {
@@ -319,12 +305,11 @@
         .header .right .username {
             display: inline-block;
             transform: translateY(-12px);
-            margin: 0 20px;
+            margin: 0 20px 0 50px;
         }
 
         .header .right .el-dropdown {
             transform: translateY(-10px);
-            margin-right: 10px;
         }
     }
 </style>

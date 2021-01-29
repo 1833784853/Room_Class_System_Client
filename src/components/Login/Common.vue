@@ -3,14 +3,14 @@
         <el-form status-icon :model="commonForm" :rules="rules" ref="commonForm" label-width="70px"
                  label-position="center"
                  class="demo-ruleForm">
-            <el-form-item label="账号" prop="username">
+            <el-form-item label-width="0"  prop="username">
                 <el-input type="text" autocomplete="off" v-model="commonForm.username" placeholder="用户名/手机号"
-                          prefix-icon="el-icon-user"></el-input>
+                          prefix-icon="el-icon-user"  @keyup.native.enter="submitForm('commonForm')"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
+            <el-form-item label-width="0" prop="password">
                 <el-input type="password"
                           autocomplete="off" v-model="commonForm.password" placeholder="请输入密码"
-                          prefix-icon="el-icon-lock"></el-input>
+                          prefix-icon="el-icon-lock" @keyup.native.enter="submitForm('commonForm')"></el-input>
             </el-form-item>
             <el-form-item style="text-align: right;margin-right: 20px">
                 <el-button type="text" class="registerBtn" @click="$router.push('/register')">立即注册</el-button>

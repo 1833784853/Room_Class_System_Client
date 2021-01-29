@@ -42,9 +42,8 @@ import {
     TimePicker,
     Card,
     Tabs,
-    TabPane
+    TabPane,
 } from 'element-ui'
-
 
 Vue.use(TabPane)
 Vue.use(Tabs)

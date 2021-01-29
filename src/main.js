@@ -7,7 +7,7 @@ import './plugins/element.js'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import qs from 'qs'
-import {Message,MessageBox} from "element-ui";
+import {Message,MessageBox,Notification} from "element-ui";
 import 'element-ui/lib/theme-chalk/display.css';
 // import './plugins/ant-design-vue'
 axios.defaults.baseURL = '/api'  //关键代码
@@ -17,6 +17,7 @@ Vue.config.productionTip = false
 Vue.prototype.$qs = qs
 Vue.prototype.$MessageBox = MessageBox
 Vue.prototype.$message = Message
+Vue.prototype.$notify = Notification
 Vue.use(VueAxios, axios)
 
 // 添加请求拦截器
@@ -28,7 +29,6 @@ axios.interceptors.request.use(function (config) {
     return config;
 }, function (error) {
     // 对请求错误统一处理
-    console.log(error);
     Message.error("网络开小差了，请检查网络")
     return error
 });
@@ -39,8 +39,8 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     // 对相应的错误统一处理
-    console.log(error);
-    Message.error("网络开小差了，请检查网络")
+    if (error.config.timeout != 180000)
+        Message.error("网络开小差了，请检查网络")
     return error
 });
 

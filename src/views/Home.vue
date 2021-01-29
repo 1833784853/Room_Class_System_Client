@@ -9,14 +9,14 @@
             <el-header :style="{height:headHeight,backgroundColor:lineBgc}">
                 <Myheader :username="username" :userMenuList="userMenuList" :menuTitle="menuTitle" :userType="userType"
                           :btnSize="btnSize" :updateModel="updateModel" :bgc="bgc" :text-color="textColor"
-                          :active-color="activeColor" :flag="flag"/>
+                          :active-color="activeColor" :flag="flag" :userID="userID"/>
             </el-header>
             <el-main :style="{backgroundColor:lineBgc}">
                 <div class="main">
                     <transition name="el-fade-in-linear">
                         <router-view :small="isSmall" :updateMenuTitle="updateMenuTitle"
-                                     :style="{position: 'absolute',width:'100%',height:'auto'}"
-                                     :formLabelPosition="formLabelPosition" :username="username" :userID="userID"/>
+                                     :btnSize="btnSize" :style="{position:'absolute',width:'100%'}"
+                                     :formLabelPosition="formLabelPosition" :username="username" :userID="userID" :userType="userType"/>
                     </transition>
                 </div>
             </el-main>
@@ -54,7 +54,6 @@
                             this.formatMenu(res.data.data)
                         }).catch(() => {
                             this.menuListLoading = false
-
                         })
                     } else {
                         Message.error("加载数据失败")
@@ -192,7 +191,7 @@
             position: relative;
             height: 100%;
             width: 100%;
-            overflow: auto;
+            overflow: visible;
         }
     }
 
@@ -223,7 +222,7 @@
             height: 100%;
             width: 100%;
             border-radius: 10px;
-            overflow: auto;
+            overflow: visible;
         }
 
     }

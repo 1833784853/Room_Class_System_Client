@@ -41,7 +41,7 @@
         props: {
             formLabelPosition: String,
             updateMenuTitle: Function,
-            userID:String
+            userID: String
         },
         mounted() {
             this.updateMenuTitle("实名认证")
@@ -51,6 +51,8 @@
                 value = value.trim()
                 if (value == '') {
                     callback(new Error("请输入姓名!"))
+                } else if (!/^[a-zA-Z\u4e00-\u9fa5]{2,10}$/gm.test(value)) {
+                    callback(new Error("请正确输入姓名（英文或中文）!"))
                 } else {
                     callback()
                 }
@@ -60,7 +62,7 @@
                 if (value == '') {
                     callback(new Error("请输入邮箱!"))
                 } else if (!/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value)) {
-                    callback(new Error("请输入正确的邮箱格式!"))
+                    callback(new Error("请输入正确合法的邮箱格式!"))
                 } else {
                     callback()
                 }
@@ -69,6 +71,8 @@
                 value = value.trim()
                 if (value == '') {
                     callback(new Error("请输入身份证号!"))
+                } else if (!/^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/.test(value)) {
+                    callback(new Error("请输入正确的身份证号!"))
                 } else {
                     callback()
                 }
@@ -96,15 +100,30 @@
             submitForm(commonForm) {
                 this.$refs[commonForm].validate((vaild) => {
                     if (vaild) {
-                        let {username,useremail,card} = this.from
-                        this.axios.post("/registerUserInfo",{
-                            userID:this.userID,
+                        let {username, useremail, card} = this.form
+                        this.axios.post("/registerUserInfo", {
+                            userID: this.userID,
                             username,
                             useremail,
                             card
-                        }).then(res=>{
-
-                        }).catch(()=>{
+                        }).then(res => {
+                            if (res.status == 200 && res.data.code == 200) {
+                                if (res.data.msg == "认证成功") {
+                                    this.$message.success(res.data.msg)
+                                    localStorage.setItem("token",res.data.token)
+                                    this.$router.go(0)
+                                } else {
+                                    if (res.data.msg == "获取数据失败") {
+                                        this.$message.success("认证成功,请重新登录")
+                                        localStorage.removeItem("token")
+                                        this.$router.go(0)
+                                    }
+                                    this.$message.error(res.data.msg)
+                                }
+                            } else {
+                                this.$message.error(res.data.data)
+                            }
+                        }).catch(() => {
 
                         })
                     }

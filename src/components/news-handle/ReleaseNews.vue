@@ -93,7 +93,7 @@
             }).catch(() => {
                 this.$message.error("数据加载失败，请检测网络")
             })
-            this.axios.get("/getRoomList").then(res => {
+            this.axios.get("/getRoomSourceAll").then(res => {
                 this.roomSource = res.data.data
             }).catch(() => {
                 this.$message.error("数据加载失败，请检测网络")

@@ -132,16 +132,6 @@
                         // 图片上传错误的回调
                         this.$message.error("图片上传失败，请重新上传")
                     },
-                    customInsert: (insertImg, result, editor) => {
-                        // 图片上传成功，插入图片的回调
-                        //result为上传图片成功的时候返回的数据，这里我打印了一下发现后台返回的是data：[{url:"路径的形式"},...]
-                        // console.log(result.data[0].url)
-                        //insertImg()为插入图片的函数
-                        //循环插入图片
-                        // for (let i = 0; i < 1; i++) {
-                        // console.log(result)
-                        // }
-                    }
                 }
                 this.editor.config.customUploadImg = (resultFiles, insertImgFn) => {
                     // resultFiles 是 input 中选中的文件列表
@@ -164,7 +154,6 @@
                 }
                 this.editor.config.onchange = (html) => {
                     if (html == "") return
-                    console.log(html)
                     this.info_ = html // 绑定当前逐渐地值
                     this.addImgArr.forEach(i => {
                         let flag = true;
