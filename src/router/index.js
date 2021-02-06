@@ -15,6 +15,7 @@ import Details from "../components/Index/Details";
 import WxRegister from "../views/WxRegister";
 import {Message} from "element-ui";
 import Info from "../components/Info/Info";
+import SeeRoomApply from "../components/ApplyList/SeeRoomApply";
 
 Vue.use(VueRouter)
 
@@ -120,7 +121,12 @@ const routes = [
             {
                 path: 'info',
                 name: "实名认证",
-                component: Info
+                component: Info,
+            },
+            {
+                path: 'seeroom',
+                name: "看房申请",
+                component: SeeRoomApply
             }
         ],
         beforeEnter: (to, from, next) => {
