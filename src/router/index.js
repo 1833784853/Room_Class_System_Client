@@ -15,7 +15,6 @@ import Details from "../components/Index/Details";
 import WxRegister from "../views/WxRegister";
 import {Message} from "element-ui";
 import Info from "../components/Info/Info";
-import SeeRoomApply from "../components/ApplyList/SeeRoomApply";
 
 Vue.use(VueRouter)
 
@@ -41,7 +40,6 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
-                            localStorage.removeItem("token")
                             next()
                         } else {
                             next('/home')
@@ -79,7 +77,6 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
-                            localStorage.removeItem("token")
                             next()
                         } else {
                             next('/home')
@@ -123,15 +120,7 @@ const routes = [
             {
                 path: 'info',
                 name: "实名认证",
-                component: Info,
-                beforeEnter: (to, from, next) => {
-
-                }
-            },
-            {
-                path: 'seeroom',
-                name: '看房申请',
-                component: SeeRoomApply
+                component: Info
             }
         ],
         beforeEnter: (to, from, next) => {
@@ -140,26 +129,24 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
-                            Message.error("登录失效")
-                            localStorage.removeItem("token")
+                            this.$message.error("登录失效")
                             next("/login/common")
                         } else {
-                            Message.success("登录成功")
+                            this.$message.success("登录成功")
                             next("/home")
                         }
                     }
                 }).catch(() => {
+                    Message.error("登陆失败")
                     next("/login/common")
                 })
             } else if (localStorage.getItem("token") == null) {
-                Message.error("登录失效")
+                this.$message.error("登录失效")
                 next("/login/common")
             } else {
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
-                            Message.error("登录失效")
-                            localStorage.removeItem("token")
                             next("/login/common")
                         } else {
                             next()
