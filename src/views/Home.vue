@@ -119,10 +119,10 @@
                     this.activeColor = "#409eff"
                     this.lineBgc = "#eee"
                 } else {
-                    this.bgc = "#545c64"
+                    this.bgc = "#100C2A"
                     this.textColor = "#fff"
                     this.activeColor = "#ffd04b"
-                    this.lineBgc = "#6a6a6a"
+                    this.lineBgc = "#000"
                 }
             },
             screenSizeHandle() {
@@ -235,6 +235,9 @@
             text-align: center;
             height: 100%;
             width: 220px !important;
+        }
+         #app .el-main {
+             overflow: auto;
         }
     }
 

@@ -2,9 +2,13 @@
     <div class="release-news">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <el-button-group>
-                    <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()">返回</el-button>
-                    <el-button type="warning" icon="el-icon-edit" @click="showAddTypeBox = true">添加新闻类型</el-button>
+                <el-button-group v-if="btnSize == 'small'">
+                    <el-button type="primary"  size="small" icon="el-icon-arrow-left" @click="$router.back()">返回</el-button>
+                    <el-button type="warning"  size="small" icon="el-icon-edit" @click="showAddTypeBox = true">添加新闻类型</el-button>
+                </el-button-group>
+                <el-button-group v-else>
+                    <el-button type="primary"  size="mini" icon="el-icon-arrow-left" @click="$router.back()"></el-button>
+                    <el-button type="warning"  size="mini" icon="el-icon-edit" @click="showAddTypeBox = true"></el-button>
                 </el-button-group>
             </el-col>
         </el-row>
@@ -24,7 +28,11 @@
                     <el-form-item label="房源编号：" prop="roomNO">
                         <el-select v-model="form.roomNO" placeholder="请选择发布新闻的房源编号" style="width: 100%;">
                             <el-option :label="item.roomNO" :value="item.roomNO" v-for="item in roomSource"
-                                       :key="item.roomID"></el-option>
+                                       :key="item.roomID">
+                              <span style="float: left">{{ item.roomNO }}</span>
+                              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.roomStatus }}</span>
+
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="新闻类型" prop="newsType">
@@ -33,7 +41,7 @@
                                        :key="item.id"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="活动时间">
+                    <el-form-item label="发布时间">
                         <el-col :span="11">
                             <el-form-item prop="date">
                                 <el-date-picker type="date" placeholder="选择日期" v-model="form.date"
@@ -93,6 +101,7 @@
             }).catch(() => {
                 this.$message.error("数据加载失败，请检测网络")
             })
+            // 获取所有的房源信息
             this.axios.get("/getRoomSourceAll").then(res => {
                 this.roomSource = res.data.data
             }).catch(() => {
@@ -107,7 +116,8 @@
             updateMenuTitle: Function,
             username: String,
             formLabelPosition: String,
-            userID: String
+            userID: String,
+            btnSize: String
         },
         data() {
             let validateTitle = (rule, value, callback) => {

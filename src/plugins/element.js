@@ -43,8 +43,10 @@ import {
     Card,
     Tabs,
     TabPane,
+    Switch
 } from 'element-ui'
 
+Vue.use(Switch)
 Vue.use(TabPane)
 Vue.use(Tabs)
 Vue.use(Card)

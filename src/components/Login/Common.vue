@@ -16,7 +16,7 @@
                 <el-button type="text" class="registerBtn" @click="$router.push('/register')">立即注册</el-button>
             </el-form-item>
             <el-form-item label-width="0">
-                <el-button @click="submitForm('commonForm')" :loading="isloading" class="login-btn" plain>登录</el-button>
+                <el-button @click="submitForm('commonForm')" :loading="isloading" class="login-btn" plain >登录</el-button>
                 <el-button @click="$router.push('/login/Wx')" class="login-btn-phone">微信登录</el-button>
             </el-form-item>
         </el-form>

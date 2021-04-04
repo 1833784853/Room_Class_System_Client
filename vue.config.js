@@ -53,7 +53,7 @@ module.exports = {
         // http 代理配置
         proxy: {
             '/api': {
-                target: 'http://www.dpll.com/api',
+                target: 'http://www.txjava.cn/api',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''

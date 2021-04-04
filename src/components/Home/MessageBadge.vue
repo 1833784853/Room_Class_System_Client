@@ -53,7 +53,7 @@
             userType: {
                 handler(val) {
                     if (val == '管理员') {
-                        this.adminGetMessageNoti()
+                        // this.adminGetMessageNoti()
                     }
                 },
                 immediate: true
@@ -88,7 +88,7 @@
 
         },
         mounted() {
-            this.getCountRoomApply()
+            // this.getCountRoomApply()
         },
         data() {
             return {
