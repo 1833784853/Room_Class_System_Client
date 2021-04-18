@@ -86,7 +86,7 @@
                                     // 登录成功
                                     localStorage.setItem("token", data.data.token)
                                     this.$message.success("登录成功")
-                                    this.$router.push('/home')
+                                    this.$router.push('/home/info')
                                 }
                             } else {
                                 Message.error("网络不稳定，请检测网络！！")

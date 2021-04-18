@@ -43,7 +43,8 @@ import {
     Card,
     Tabs,
     TabPane,
-    Switch
+    Switch,
+    Calendar
 } from 'element-ui'
 
 Vue.use(Switch)
@@ -90,3 +91,4 @@ Vue.use(Dialog)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
 Vue.use(Loading)
+Vue.use(Calendar)

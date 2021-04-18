@@ -20,6 +20,7 @@
         margin: 0;
         box-sizing: border-box;
     }
+
     ul {
         list-style-type: none;
     }
@@ -30,4 +31,23 @@
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
     }
+
+    .image-slot {
+        height: 100%;
+        position: relative;
+        background-color: #eee;
+    }
+
+    .image-slot i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: #CDCBCB;
+        transform: translate(-50%, -50%);
+    }
+
+    .houseBanner .el-carousel__container {
+        height: 100%;
+    }
+
 </style>

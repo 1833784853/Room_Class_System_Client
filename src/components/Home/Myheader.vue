@@ -78,18 +78,17 @@ export default {
         this.updateView(new Date().getHours())
     },
     watch: {
-      isAuto: {
-          handler(val) {
-              this.isAuto = val
-              if (val != '系统自适应') {
-                  this.updateModel(false)
-              } else {
-                  this.updateModel(true)
-
-              }
-          },
-          immediate:true
-      }
+        isAuto: {
+            handler(val) {
+                this.isAuto = val
+                if (val != '系统自适应') {
+                    this.updateModel(!this.flag)
+                } else {
+                    this.updateModel(!this.flag)
+                }
+            },
+            immediate: true
+        }
     },
     methods: {
         getDays(days) {

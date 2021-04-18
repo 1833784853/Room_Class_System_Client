@@ -11,11 +11,13 @@ import BannerHandle from "../components/banner-handle/Banner-handle"
 import NewsHandle from "../components/news-handle/News-handle"
 import ReleaseNews from "../components/news-handle/ReleaseNews"
 import NewsEdit from "../components/news-handle/NewsEdit";
-import Details from "../components/Index/Details";
+import Details from "../views/Details";
 import WxRegister from "../views/WxRegister";
 import {Message} from "element-ui";
 import Info from "../components/Info/Info";
 import SeeRoomApply from "../components/ApplyList/SeeRoomApply";
+import UserRoomList from "../components/ApplyList/UserRoomList";
+import Daily from "../components/Daily/Daily";
 
 Vue.use(VueRouter)
 
@@ -26,7 +28,7 @@ const routes = [
         component: Index,
     },
     {
-        path: '/details',
+        path: '/details/:id',
         name: 'Details',
         component: Details
     },
@@ -43,7 +45,7 @@ const routes = [
                         if (res.data.msg == '未登录') {
                             next()
                         } else {
-                            next('/home')
+                            next('/home/info')
                         }
                     }
                 })
@@ -80,7 +82,7 @@ const routes = [
                         if (res.data.msg == '未登录') {
                             next()
                         } else {
-                            next('/home')
+                            next('/home/info')
                         }
                     }
                 })
@@ -91,8 +93,12 @@ const routes = [
         path: '/home/:token*',
         name: 'home',
         component: Home,
-
         children: [
+            {
+                path: "info",
+                name: "info",
+                component: Info,
+            },
             {
                 path: "roomlist",
                 name: "房源列表",
@@ -127,6 +133,16 @@ const routes = [
                 path: 'seeroom',
                 name: "看房申请",
                 component: SeeRoomApply
+            },
+            {
+                path: 'userseeapply',
+                name: "用户看房申请",
+                component: UserRoomList
+            },
+            {
+                path: 'see-daily',
+                name: "日常管理",
+                component: Daily
             }
         ],
         beforeEnter: (to, from, next) => {
@@ -135,19 +151,16 @@ const routes = [
                 Vue.axios.get('/login/checked').then(res => {
                     if (res.status == 200) {
                         if (res.data.msg == '未登录') {
-                            this.$message.error("登录失效")
                             next("/login/common")
                         } else {
-                            this.$message.success("登录成功")
-                            next("/home")
+                            Message.success("登录成功")
+                            next("/home/info")
                         }
                     }
                 }).catch(() => {
-                    Message.error("登陆失败")
                     next("/login/common")
                 })
             } else if (localStorage.getItem("token") == null) {
-                this.$message.error("登录失效")
                 next("/login/common")
             } else {
                 Vue.axios.get('/login/checked').then(res => {

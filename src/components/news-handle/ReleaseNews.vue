@@ -240,9 +240,9 @@
                                 this.$message.error(res.data.msg)
                             }
                         })
-                        this.axios.post("/News/delete",{
-                            fileUrls:this.removeImgArr
-                        })
+                        // this.axios.post("/News/delete",{
+                        //     fileUrls:this.removeImgArr
+                        // })
                     } else {
                         return false
                     }

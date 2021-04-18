@@ -7,13 +7,13 @@
         <el-main>
             <BannerComponent/>
             <div class="news-content">
-                <el-row :span="20">
+                <el-row :gutter="20">
                     <el-col :lg="18">
                         <NewHouse />
                         <LeaseHouse />
                     </el-col>
                     <el-col :lg="6">
-
+                        <TopHouse />
                     </el-col>
                 </el-row>
             </div>
@@ -30,6 +30,8 @@
     import BannerComponent from "../components/Index/BannerComponent"
     import NewHouse from "../components/Index/NewHouse";
     import LeaseHouse from "../components/Index/LeaseHouse"
+    import TopHouse from "../components/Index/TopHouse";
+
     export default {
         name: "Index",
         components: {
@@ -37,7 +39,8 @@
             IndexFooter,
             BannerComponent,
             NewHouse,
-            LeaseHouse
+            LeaseHouse,
+            TopHouse
         },
 
     }
@@ -60,7 +63,7 @@
         .el-main {
             overflow: visible;
             height: auto;
-            margin-top: 20px;
+            padding-top: 20px;
             background-color: #fafafa;
         }
         .news-content {

@@ -139,12 +139,12 @@
             }
         },
         beforeDestroy() {
-            this.axios.get(`/offline?userID=${this.userID}`).then(res => {
-                console.log(res);
-                this.isOnline = false
-            }).catch(() => {
-                this.isOnline = false
-            })
+            // this.axios.get(`/offline?userID=${this.userID}`).then(res => {
+            //     console.log(res);
+            //     this.isOnline = false
+            // }).catch(() => {
+            //     this.isOnline = false
+            // })
         },
 
 

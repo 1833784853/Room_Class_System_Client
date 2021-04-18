@@ -144,7 +144,7 @@
                                 this.$message.success(res.data.msg)
                                 if (res.data.token) {
                                     localStorage.setItem("token", res.data.token)
-                                    this.$router.push("/home")
+                                    this.$router.push("/home/info")
                                 } else {
                                     this.$router.push("/login/wx")
                                 }

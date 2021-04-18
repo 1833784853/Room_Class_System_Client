@@ -7,7 +7,7 @@ import './plugins/element.js'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import qs from 'qs'
-import {Message,MessageBox,Notification} from "element-ui";
+import {Message, MessageBox, Notification} from "element-ui";
 import 'element-ui/lib/theme-chalk/display.css';
 // import './plugins/ant-design-vue'
 axios.defaults.baseURL = '/api'  //关键代码

@@ -15,8 +15,11 @@
                 <div class="main">
                     <transition name="el-fade-in-linear">
                         <router-view :small="isSmall" :updateMenuTitle="updateMenuTitle"
-                                     :btnSize="btnSize" :style="{position:'absolute',width:'100%'}"
-                                     :formLabelPosition="formLabelPosition" :username="username" :userID="userID" :userType="userType"/>
+                                     :btnSize="btnSize" :style="{position:'absolute',width:'100%'}" :bgc="bgc"
+                                     :text-color="textColor"
+                                     :active-color="activeColor" :flag="flag"
+                                     :formLabelPosition="formLabelPosition" :username="username" :userID="userID"
+                                     :userType="userType"/>
                     </transition>
                 </div>
             </el-main>
@@ -236,8 +239,9 @@
             height: 100%;
             width: 220px !important;
         }
-         #app .el-main {
-             overflow: auto;
+
+        #app .el-main {
+            overflow: auto;
         }
     }
 

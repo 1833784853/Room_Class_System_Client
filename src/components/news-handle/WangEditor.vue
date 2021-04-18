@@ -165,9 +165,7 @@
                             })
                             if (flag) {
                                 this.removeImgArr.push(i)
-                                this.axios.post("/News/delete", {
-                                    fileUrls: i
-                                })
+
                             }
                         }
                     })

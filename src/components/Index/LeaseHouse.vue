@@ -77,13 +77,7 @@
         },
         methods: {
             goDetails(data) {
-                console.log(data)
-                this.$router.push({
-                    name: "Details",
-                    parmas: {
-                        data
-                    }
-                })
+                this.$router.push("/details/"+data.newsData.roomNewID)
             }
         }
     }

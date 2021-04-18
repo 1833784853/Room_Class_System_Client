@@ -18,7 +18,7 @@
                     <el-dropdown-item icon="el-icon-edit" command="/Feedback">意见反馈</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-s-custom" command="/login/common" v-if="$route.path.indexOf('/login')!=-1?false:(isLogin?false:true)">登录</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-edit-outline" command="/register" v-if="$route.path.indexOf('/login')!=-1?false:(isLogin?false:($route.path.indexOf('/register')!=-1?false:true))">注册</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-s-custom" command="/home" v-if="isLogin">个人中心</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-s-custom" command="/home/info" v-if="isLogin">个人中心</el-dropdown-item>
 
                 </el-dropdown-menu>
             </el-dropdown>
@@ -47,7 +47,7 @@
         </el-col>
         <el-col :lg="4" :md="6" :sm="6" class="hidden-sm-only" :xs="0" v-if="isLogin">
             <div class="personal">
-                <el-link :underline="false" icon="el-icon-s-custom" href="/#/home" style="transition: all .3s">个人中心</el-link>
+                <el-link :underline="false" icon="el-icon-s-custom" href="/#/home/info" style="transition: all .3s">个人中心</el-link>
             </div>
         </el-col>
     </el-row>
