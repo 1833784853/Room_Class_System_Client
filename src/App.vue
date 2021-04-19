@@ -50,4 +50,7 @@
         height: 100%;
     }
 
+    #app .el-calendar-day {
+        height: 110px;
+    }
 </style>

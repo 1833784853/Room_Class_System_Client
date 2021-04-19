@@ -62,7 +62,9 @@
                                 </el-col>
                             </el-row>
                             <div style="margin-top: 10px">
-                                <el-button type="success" plain round>申请看房</el-button>
+                                <el-button type="success" plain round @click="addSeeUserApply"
+                                           :loading="applyBtnLoading" :disabled="btnText == '已申请'">{{applyBtnLoading?'申请中..':btnText}}
+                                </el-button>
                             </div>
                         </div>
                     </el-col>
@@ -94,8 +96,17 @@
             IndexFooter,
             IndexNav
         },
+        watch: {
+            userID: {
+                handler(val) {
+                    if (val == undefined || val == null) return
+                    this.userID = val
+                    this.isApply()
+                },
+                immediate: true
+            }
+        },
         mounted() {
-            console.log(this.$route);
             this.axios.get(`/News/getNews?roomNewID=${this.$route.params.id}`).then(res => {
                 if (res.data.code == 200) {
                     this.data = res.data.data
@@ -105,6 +116,7 @@
                     }).then(res => {
                         if (res.data.code == 200) {
                             this.data = res.data.data
+                            this.isApply()
                         } else {
                             this.$message.error("获取数据失败，请刷新重试")
                         }
@@ -113,11 +125,21 @@
                     this.$message.error("获取数据失败，请刷新重试")
                 }
             })
+            this.axios.get("/login/getUser").then(result => {
+                if (result.data.data) {
+                    this.userID = result.data.data.userID;
+                }
+            }).catch(err => {
+                this.applyBtnLoading = false
+            })
         },
         data() {
             return {
+                applyBtnLoading: false,
                 data: {},
-                imgUrls: []
+                imgUrls: [],
+                btnText: "申请看房",
+                userID: null
             }
         },
         methods: {
@@ -127,6 +149,47 @@
 
                 html.match(exg).forEach(item => {
                     this.imgUrls.push(item.substring(0, item.length - 1))
+                })
+            },
+            addSeeUserApply() {
+                this.applyBtnLoading = true
+                if (localStorage.getItem("token") == undefined || localStorage.getItem("token") == null) {
+                    this.$message.error("请登陆后操作")
+                    this.$router.push("/login/common")
+                    this.applyBtnLoading = false
+                } else {
+                    this.axios.get("/login/checked").then(res => {
+                        if (res.data.msg == '未登录') {
+                            this.$message.error("请登陆后操作")
+                            this.$router.push("/login/common")
+                            this.applyBtnLoading = false
+                        } else {
+                            this.axios.get("/login/getUser").then(result => {
+                                this.userID = result.data.data.userID;
+                                this.axios.post("/Tenant/roomapply", {
+                                    userID: this.userID,
+                                    roomNO: this.data.roomNO.roomNO
+                                }).then(res => {
+                                    this.$message.success(res.data.msg)
+                                    this.applyBtnLoading = false
+                                    this.isApply()
+                                }).catch(err => {
+                                    this.applyBtnLoading = false
+                                })
+                            }).catch(err => {
+                                this.applyBtnLoading = false
+                            })
+                        }
+                    }).catch(err => {
+                        this.applyBtnLoading = false
+                    })
+                }
+            },
+            isApply() {
+                this.axios.get(`/Tenant/getApplyByIdNo?userID=${this.userID}&roomNO=${this.data.roomNO.roomNO}`).then(res => {
+                    if (res.data.msg == "已申请") {
+                        this.btnText = res.data.msg
+                    }
                 })
             }
         }
@@ -164,6 +227,7 @@
         #app .news-content {
             min-width: 240px;
             padding: 0px 10px;
+
             .houseTitle {
                 text-align: left;
                 font-size: 18px;
@@ -188,6 +252,7 @@
             .houseBanner {
                 height: 250px;
                 margin-bottom: 10px;
+
                 .houseBannerImg {
                     height: 250px;
                     display: block;
@@ -230,6 +295,7 @@
             min-width: 678px;
             margin: 0 auto;
             padding: 10px 0;
+
             .houseTitle {
                 text-align: left;
                 font-size: 26px;
@@ -254,6 +320,7 @@
             .houseBanner {
                 height: 400px;
                 margin-bottom: 10px;
+
                 .houseBannerImg {
                     height: 400px;
                     display: block;

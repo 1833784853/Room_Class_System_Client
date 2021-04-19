@@ -53,7 +53,7 @@ module.exports = {
         // http 代理配置
         proxy: {
             '/api': {
-                target: 'http://172.16.139.227:8080/api',
+                target: 'http://172.16.138.169:8080/api',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''

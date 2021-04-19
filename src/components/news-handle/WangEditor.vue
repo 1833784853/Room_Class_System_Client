@@ -86,10 +86,9 @@
         },
         methods: {
             seteditor() {
-                // http://192.168.2.125:8080/admin/storage/create
                 this.editor = new E(this.$refs.toolbar, this.$refs.editor)
                 this.editor.config.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
-                this.editor.config.uploadImgMaxLength = 1 // 限制一次最多上传 3 张图片
+                this.editor.config.uploadImgMaxLength = 1 // 限制一次最多上传 1 张图片
                 this.editor.config.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
                 // 配置菜单
                 this.editor.config.menus = [
@@ -134,8 +133,6 @@
                     },
                 }
                 this.editor.config.customUploadImg = (resultFiles, insertImgFn) => {
-                    // resultFiles 是 input 中选中的文件列表
-                    // insertImgFn 是获取图片 url 后，插入到编辑器的方法
                     var formData = new FormData();
                     this.isLoading = true;
                     formData.append("file", resultFiles[0])
@@ -150,7 +147,6 @@
                         this.isLoading = false;
                     })
                     // 上传图片，返回结果，将图片插入到编辑器中
-                    // insertImgFn(imgUrl)
                 }
                 this.editor.config.onchange = (html) => {
                     if (html == "") return

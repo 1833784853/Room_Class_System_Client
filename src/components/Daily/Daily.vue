@@ -21,10 +21,10 @@
                     slot="dateCell"
                     slot-scope="{date, data}">
                 {{data.day.split("-")[2]}}
-                <div :class="data.isSelected?'isActive':''" style="height: 60px;overflow: hidden">
+                <div :class="data.isSelected?'isActive':''" style="height: 80px;overflow: hidden">
                     <div v-for="item in cdata" v-if="data.day == item.dailyTime"
-                         style="font-size: 14px;text-align: left;" @click="showEditBox(item)">
-                        <i class="el-icon-star-on" style="color: red"></i>
+                         style="font-size: 14px;width: 100%; text-align: left;white-space: nowrap;text-overflow: ellipsis;overflow: hidden">
+                        <i class="el-icon-star-on" style="color: red; font-size: 16px" @click="showEditBox(item)"></i>
                         {{item.dailyTitle}}
                     </div>
                 </div>
@@ -65,6 +65,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogHandle">取 消</el-button>
+                <el-button type="danger" @click="deleteDaily">删除</el-button>
                 <el-button type="primary" @click="editSubmitForm('form')" :loading="editBtnLoading">
                     {{editBtnLoading?"修改中":"修改"}}
                 </el-button>
@@ -111,6 +112,7 @@
                 loading: false,
                 showEditBoxFlag: false,
                 editBtnLoading: false,
+                deleteBtnLoading: false,
                 cdata: [],
                 form: {
                     title: "",
@@ -169,6 +171,23 @@
                         })
                     }
                 });
+            },
+            deleteDaily() {
+                this.deleteBtnLoading = true
+                this.axios.post("/Tenant/deleteDaily",{
+                    dailyID:this.form.dailyID
+                }).then(res=>{
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.closeDialogHandle()
+                        this.getDaily()
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.deleteBtnLoading = false
+                }).catch(err=>{
+                    this.deleteBtnLoading = false
+                })
             },
             editSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
