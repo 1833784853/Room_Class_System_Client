@@ -16,17 +16,15 @@
                     prop="roomNO.roomAddress">
             </el-table-column>
             <el-table-column
-                    label="面积(㎡)">
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.roomNO.roomArea }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
                     label="价格">
                 <template slot-scope="scope">
                     <i class="el-icon-money"></i>
                     <span style="margin-left: 10px">{{ scope.row.roomNO.roomPrice }}</span>
                 </template>
+            </el-table-column>
+            <el-table-column
+                    label="租赁人"
+                    prop="userID.userName">
             </el-table-column>
             <el-table-column
                     label="申请人身份证号"
@@ -36,19 +34,20 @@
                     label="申请人联系方式"
                     prop="userID.userID.userPhone">
             </el-table-column>
-            <el-table-column
-                    label="申请状态">
-                <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.applyStatus == 0?'正在申请。。':(scope.row.applyStatus == 1?'已同意申请':'已拒绝申请') }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" width="100px">
+            <el-table-column label="操作" width="200px">
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除
+                            plain
+                            type="primary"
+                            @click="handleDelete(scope.$index, scope.row)">查看合同
                     </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">申请退租
+                    </el-button>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -67,7 +66,7 @@
 
 <script>
     export default {
-        name: "UserRoomList",
+        name: "UserRoomLease",
         props: {
             userID: String
         },
@@ -75,7 +74,7 @@
             userID: {
                 handler(val) {
                     if (val === null || val === undefined || val === "") return
-                    this.getUserApply(0)
+                    this.getUserLease(0)
                 },
                 immediate: true
             }
@@ -93,9 +92,14 @@
             }
         },
         methods: {
-            getUserApply(pageSize) {
+            getUserLease(pageSize) {
+                console.log(this.userID,pageSize,this.pageSize)
                 this.loading = true
-                this.axios.get(`/Tenant/getApplylistUserid?userID=${this.userID}&currentPage=${pageSize}&pageSize=${this.pageSize}`).then(res => {
+                this.axios.post("/selectBystatu",{
+                    userID:this.userID,
+                    currentPage:pageSize,
+                    pageSize:this.pageSize
+                }).then(res => {
                     this.loading = false
                     if (res.data.code == 200) {
                         this.tableData = res.data.data
@@ -115,7 +119,7 @@
                 }).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success(res.data.msg)
-                        this.getUserApply(this.currentPage - 1)
+                        this.getUserLease(this.currentPage - 1)
 
                     } else {
                         this.$message.error(res.data.msg)
@@ -127,7 +131,7 @@
 
             },
             handleCurrentChange(val) {
-                this.getUserApply(val-1)
+                this.getUserLease(val - 1)
             }
         }
     }

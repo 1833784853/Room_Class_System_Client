@@ -5,21 +5,30 @@
                 <el-button-group v-if="btnSize == 'mini'">
                     <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()" :size="btnSize">
                     </el-button>
-                    <el-button v-if="userType == '管理员'" type="warning" icon="el-icon-edit"
-                               @click="addDialogVisible = true" :size="btnSize">
+
+                    <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
+                               @click="agreeAllRow" :size="btnSize">
                     </el-button>
-                    <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-delete"
+                    <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
                                @click="deleteAllRow" :size="btnSize">
+                    </el-button>
+                    <el-button v-show="showDelAllBtn" type="danger" plain :loading="delBtnIsLoading"
+                               icon="el-icon-delete"
+                               @click="deleteAll" :size="btnSize">
                     </el-button>
                 </el-button-group>
                 <el-button-group v-else>
                     <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()" :size="btnSize">返回
                     </el-button>
-                    <el-button v-if="userType == '管理员'" type="warning" icon="el-icon-edit"
-                               @click="addDialogVisible = true" :size="btnSize">添加房源信息
+                    <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
+                               @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"同意中..":"同意所有选中"}}
                     </el-button>
-                    <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-delete"
-                               @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"删除中..":"删除所有选中"}}
+                    <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
+                               @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"拒绝中..":"拒绝所有选中"}}
+                    </el-button>
+                    <el-button v-show="showDelAllBtn" type="danger" plain :loading="delBtnIsLoading"
+                               icon="el-icon-delete"
+                               @click="deleteAll" :size="btnSize">{{delBtnIsLoading?"删除中..":"删除所有选中"}}
                     </el-button>
                 </el-button-group>
             </el-col>
@@ -33,161 +42,88 @@
                     type="selection"
                     width="55" v-if="userType == '管理员'">
             </el-table-column>
-            <el-table-column type="expand">
-                <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="房源编号">
-                            <span>{{ props.row.data!= undefined ?props.row.data.roomNO:props.row.roomNO }}</span>
-                        </el-form-item>
-                        <el-form-item label="发布人">
-                            <span>{{ props.row.data!= undefined ?props.row.data.user.userName:props.row.user.userName }}</span>
-                        </el-form-item>
-                        <el-form-item label="更新时间">
-                            <span>{{ props.row.data!= undefined ?props.row.data.roomLatelyTime:props.row.roomLatelyTime }}</span>
-                        </el-form-item>
-                        <el-form-item label="联系电话">
-                            <span>{{ props.row.data!= undefined ?props.row.data.user.userPhone:props.row.user.userPhone }}</span>
-                        </el-form-item>
-                        <el-form-item label="面积">
-                            <span>{{ props.row.data!= undefined ?props.row.data.roomArea :props.row.roomArea }}<el-tag
-                                    style="margin-left:10px;">（㎡）</el-tag></span>
-                        </el-form-item>
-                        <el-form-item label="地址">
-                            <span>{{ props.row.data!= undefined ?props.row.data.roomAddress :props.row.roomAddress }}</span>
-                        </el-form-item>
-                        <el-form-item label="价格">
-                            <span><el-tag type="danger">￥{{ props.row.data!= undefined ?props.row.data.roomPrice:props.row.roomPrice }}</el-tag></span>
-                        </el-form-item>
-                    </el-form>
-                </template>
-            </el-table-column>
-
-            <el-table-column
-                    label="日期">
-                <template slot-scope="scope">
-                    <i class="el-icon-time"></i>
-                    <span style="margin-left: 10px">{{ scope.row.data!= undefined ? scope.row.data.roomTime:scope.row.roomTime }}</span>
-                </template>
-            </el-table-column>
             <el-table-column
                     label="房源编号">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.data!= undefined ?scope.row.data.roomNO :scope.row.roomNO }}</span>
+                    <span>{{ scope.row.roomNO.roomNO }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     label="地址">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.data!= undefined ?scope.row.data.roomAddress :scope.row.roomAddress }}</span>
+                    <span>{{ scope.row.roomNO.roomAddress}}</span>
                 </template>
             </el-table-column>
             <el-table-column
-                    label="状态">
+                    label="面积(㎡)">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.data!= undefined ?scope.row.data.roomStatus :scope.row.roomStatus }}</span>
+                    <span>{{ scope.row.roomNO.roomArea}}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="150" align="center">
+            <el-table-column
+                    label="价格">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.roomNO.roomPrice}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="申请人姓名">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.userID.userName}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="申请人联系电话">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.userID.userID.userPhone}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="申请人身份证号">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.userID.userCard}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="250" align="center">
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            type="primary"
+                            type="success"
                             plain
-                            @click="handleEdit(scope.$index, scope.row)"
-                            v-if="userType == '管理员'">编辑
+                            v-if="scope.row.applyStatus == 0"
+                            @click="handleArgee(scope.$index, scope.row)">同意
                     </el-button>
+                    <el-button
+                            size="mini"
+                            plain
+                            type="danger"
+                            v-if="scope.row.applyStatus == 0"
+                            @click="handleDelete(scope.$index, scope.row)"
+                    >拒绝
+                    </el-button>
+                    <el-tag type="success" v-else-if="scope.row.applyStatus == 1" style="margin-right: 10px">已同意申请
+                    </el-tag>
+
+                    <el-tag type="danger" v-else-if="scope.row.applyStatus == 2" style="margin-right: 10px">已拒绝申请
+                    </el-tag>
+
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)"
-                            v-if="userType == '管理员'">删除
+                            @click="handleDel(scope.$index, scope.row)"
+                    >删除
                     </el-button>
-                    <el-button
-                            size="mini"
-                            type="primary"
-                            plain
-                            @click="applyRoomHandle(scope.$index, scope.row)"
-                            v-if="userType != '管理员' && (scope.row.roomStatus == '空闲' || scope.row.data.roomStatus == '空闲')"
-                            :disabled="scope.row.data != undefined?scope.row.isApply:false">{{scope.row.data !=
-                        undefined && scope.row.isApply?'已申请':'申请看房'}}
-                    </el-button>
-
                 </template>
             </el-table-column>
         </el-table>
-        <el-dialog :close-on-click-modal="false" title="修改房源" :visible.sync="dialogFormVisible"
-                   :destroy-on-close="true" :before-close="closeDialogHandle">
-            <el-form status-icon ref="form" :rules="rules" label-position="center" :model="form" label-width="100px"
-                     size="small">
-                <el-form-item label="房源地址：" label-suffix="￥" prop="roomAddress">
-                    <el-input v-model="form.roomAddress" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="房源面积：" style="text-align: left" prop="roomArea">
-                    <el-input v-model="form.roomArea" autocomplete="off" style="width: 40%">
-                    </el-input>
-                    <el-tag>㎡</el-tag>
-                </el-form-item>
-                <el-form-item label="房源单价：" style="text-align: left" prop="roomPrice">
-                    <el-input v-model="form.roomPrice" autocomplete="off" style="width: 40%">
-                    </el-input>
-                    <el-tag type="danger">元</el-tag>
-                </el-form-item>
-                <el-form-item label="房源状态：" style="text-align: left" prop="roomStatus">
-                    <el-select v-model="form.roomStatus" placeholder="请选择状态">
-                        <el-option label="空闲" value="空闲"></el-option>
-                        <el-option label="已租" value="已租"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialogHandle">取 消</el-button>
-                <el-button type="primary" @click="submitForm('form')" :loading="editBtnIsLoading">
-                    {{editBtnIsLoading?"修改中":"修改"}}
-                </el-button>
-            </div>
-        </el-dialog>
-
-        <el-dialog :close-on-click-modal="false" title="添加房源" :visible.sync="addDialogVisible"
-                   :destroy-on-close="true" :before-close="closeDialogHandle">
-            <el-form status-icon ref="form" :rules="rules" label-position="center" :model="form" label-width="100px"
-                     size="small">
-                <el-form-item label="房源地址：" label-suffix="￥" prop="roomAddress">
-                    <el-input v-model="form.roomAddress" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="房源面积：" style="text-align: left" prop="roomArea">
-                    <el-input v-model="form.roomArea" autocomplete="off" style="width: 40%">
-                    </el-input>
-                    <el-tag>㎡</el-tag>
-                </el-form-item>
-                <el-form-item label="房源单价：" style="text-align: left" prop="roomPrice">
-                    <el-input v-model="form.roomPrice" autocomplete="off" style="width: 40%">
-                    </el-input>
-                    <el-tag type="danger">元</el-tag>
-                </el-form-item>
-                <el-form-item label="房源状态：" style="text-align: left" prop="roomStatus">
-                    <el-select v-model="form.roomStatus" placeholder="请选择状态">
-                        <el-option label="空闲" value="空闲"></el-option>
-                        <el-option label="已租" value="已租"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialogHandle">取 消</el-button>
-                <el-button type="primary" @click="addSubmitForm('form')" :loading="editBtnIsLoading">
-                    {{editBtnIsLoading?"添加中":"添加"}}
-                </el-button>
-            </div>
-        </el-dialog>
         <el-pagination
                 background
                 layout="prev, pager, next"
                 :total="totalPage"
                 :page-size="pageSize"
                 style="margin-top: 20px"
-                @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page.sync="currentPage"
-                hide-on-single-page>
+                :current-page.sync="currentPage">
         </el-pagination>
     </div>
 </template>
@@ -203,14 +139,12 @@
         },
         mounted() {
             this.updateMenuTitle("看房申请列表")
+            this.getApplyAll(0)
         },
         data() {
             return {
                 isLoading: false,
-                editBtnIsLoading: false,
                 tableData: [],
-                dialogFormVisible: false,
-                addDialogVisible: false,
                 showDelAllBtn: false,
                 delBtnIsLoading: false,
                 applyLoading: false,
@@ -225,18 +159,175 @@
                 totalPage: 0,
                 pageSize: 10,
                 currentPage: 0,
+            }
+        },
+        methods: {
+            getApplyAll(currentPage) {
+                this.isLoading = true
+                this.axios.get(`/Admin/getlistAll?currentPage=${currentPage}&pageSize=${this.pageSize}`).then(res => {
+                    this.tableData = res.data.data
+                    this.totalPage = res.data.totalPage
+                    this.isLoading = false
+                }).catch(err => {
+                    this.isLoading = false
+                })
+            },
+            // 批量同意
+            agreeAllRow() {
+                this.isLoading = true
+                this.axios.post("/Admin/editAgreebatch", {
+                    applyID: this.deleteAllRowArr
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyAll(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.isLoading = false
+                }).catch(() => {
+                    this.isLoading = false
+                })
+            },
+            // 批量拒绝
+            deleteAllRow() {
+                this.isLoading = true
+                this.axios.post("/Admin/editRefusebatch", {
+                    applyID: this.deleteAllRowArr
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyAll(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.isLoading = false
+                }).catch(() => {
+                    this.isLoading = false
+                })
+            },
+            // 多选框
+            handleSelectionChange(data) {
+                this.deleteAllRowArr = []
+                data.forEach(item => {
+                    this.deleteAllRowArr.push(item.applyID)
+                })
+                this.showDelAllBtn = data.length >= 2
+            },
+            handleArgee(index, row) {
+                this.isLoading = true
+                this.axios.post("/Admin/editApply", {
+                    applyStatus: 1,
+                    applyID: row.applyID
+                }).then(res => {
+                    if (res.data.code === 200) {
+                        this.$message.success("操作成功")
+                        this.getApplyAll(this.currentPage)
+                    } else {
+                        this.$message.error("操作失败")
+                    }
+                    this.isLoading = false
+                }).catch(() => {
 
-                rules: {
-                    roomAddress: {validator: validateRoomAddress, trigger: 'blur'},
-                    roomArea: {validator: validateRoomArea, trigger: 'blur'},
-                    roomPrice: {validator: validateRoomPrice, trigger: 'blur'},
-                    roomStatus: {validator: validateRoomStatus, trigger: 'blur'},
-                }
+                    this.isLoading = false
+                })
+            },
+            handleDelete(index, row) {
+                this.isLoading = true
+                this.axios.post("/Admin/editApply", {
+                    applyStatus: 2,
+                    applyID: row.applyID
+                }).then(res => {
+                    if (res.data.code === 200) {
+                        this.$message.success("操作成功")
+                        this.getApplyAll(this.currentPage)
+                    } else {
+                        this.$message.error("操作失败")
+                    }
+                    this.isLoading = false
+                }).catch(() => {
+
+                    this.isLoading = false
+                })
+            },
+            handleCurrentChange(val) {
+                // 换页事件
+                this.getApplyAll(this.currentPage - 1)
+            },
+            // 逐个删除
+            handleDel(index, row) {
+                this.isLoading = true
+                this.axios.post("/Tenant/deleteApply", {
+                    applyID: row.applyID
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyAll(this.currentPage - 1)
+
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.isLoading = false
+                }).catch(() => {
+                    this.isLoading = false
+                })
+            },
+            // 批量删除
+            deleteAll() {
+                this.delBtnIsLoading = true
+                this.axios.post("/Tenant/deletebatch", {
+                    applyID: this.deleteAllRowArr
+                }).then(res => {
+                    if (res.data.code === 200) {
+                        this.$message.success("删除成功")
+                        this.getApplyAll(this.currentPage - 1)
+                    } else {
+                        this.$message.error("删除失败")
+                    }
+                    this.delBtnIsLoading = false
+                }).catch(() => {
+                    this.delBtnIsLoading = false
+                })
             }
         }
     }
 </script>
 
 <style lang="less" scoped>
+    .room-list-box {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
 
+        .top {
+            text-align: left;
+        }
+    }
+
+    .demo-table-expand {
+        font-size: 0;
+    }
+
+    .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
+    }
+
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    @media screen and (min-width: 240px) {
+
+    }
+
+    @media screen and (min-width: 768px) {
+
+    }
+
+    @media screen and (min-width: 1330px) {
+
+    }
 </style>

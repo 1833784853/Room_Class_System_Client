@@ -103,11 +103,12 @@
                             useremail,
                             card
                         }).then(res => {
-                            console.log(res.data)
-                            localStorage.setItem("token",res.data.token)
-                            this.$router.go(0)
-                        }).catch(() => {
-
+                            if (res.data.code == 200) {
+                                localStorage.setItem("token", res.data.token)
+                                this.$router.go(0)
+                            } else {
+                                this.$message.error(res.data.msg)
+                            }
                         })
                     }
                 })

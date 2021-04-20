@@ -18,6 +18,7 @@ import Info from "../components/Info/Info";
 import SeeRoomApply from "../components/ApplyList/SeeRoomApply";
 import UserRoomList from "../components/ApplyList/UserRoomList";
 import Daily from "../components/Daily/Daily";
+import UserRoomLease from "../components/RoomLease/UserRoomLease";
 
 Vue.use(VueRouter)
 
@@ -143,6 +144,11 @@ const routes = [
                 path: 'see-daily',
                 name: "日常管理",
                 component: Daily
+            },
+            {
+                path: 'userleaselist',
+                name: "用户在租列表",
+                component: UserRoomLease
             }
         ],
         beforeEnter: (to, from, next) => {

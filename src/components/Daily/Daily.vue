@@ -21,7 +21,7 @@
                     slot="dateCell"
                     slot-scope="{date, data}">
                 {{data.day.split("-")[2]}}
-                <div :class="data.isSelected?'isActive':''" style="height: 80px;overflow: hidden">
+                <div :class="data.isSelected?'isActive':''" style="height: 70px;overflow: hidden">
                     <div v-for="item in cdata" v-if="data.day == item.dailyTime"
                          style="font-size: 14px;width: 100%; text-align: left;white-space: nowrap;text-overflow: ellipsis;overflow: hidden">
                         <i class="el-icon-star-on" style="color: red; font-size: 16px" @click="showEditBox(item)"></i>
@@ -80,7 +80,8 @@
         props: {
             btnSize: String,
             userID: String,
-            userType: String
+            userType: String,
+            updateMenuTitle:Function
         },
         watch: {
             userID: {
@@ -89,7 +90,9 @@
                 },
                 immediate: true
             },
-
+        },
+        mounted() {
+            this.updateMenuTitle("日常管理")
         },
         data() {
             let validateTitle = (rule, value, callback) => {

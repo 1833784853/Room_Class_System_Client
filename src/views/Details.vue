@@ -115,7 +115,6 @@
                         roomNewID: this.data.roomNewID
                     }).then(res => {
                         if (res.data.code == 200) {
-                            this.data = res.data.data
                             this.isApply()
                         } else {
                             this.$message.error("获取数据失败，请刷新重试")
