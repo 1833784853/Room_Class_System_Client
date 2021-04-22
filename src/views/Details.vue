@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <el-container v-loading="isloading">
         <el-header height="70px">
             <IndexNav/>
         </el-header>
@@ -63,7 +63,8 @@
                             </el-row>
                             <div style="margin-top: 10px">
                                 <el-button type="success" plain round @click="addSeeUserApply"
-                                           :loading="applyBtnLoading" :disabled="btnText == '已申请'">{{applyBtnLoading?'申请中..':btnText}}
+                                           :loading="applyBtnLoading" :disabled="btnText != '申请看房'">
+                                    {{applyBtnLoading?'申请中..':btnText}}
                                 </el-button>
                             </div>
                         </div>
@@ -138,7 +139,8 @@
                 data: {},
                 imgUrls: [],
                 btnText: "申请看房",
-                userID: null
+                userID: null,
+                isloading: true
             }
         },
         methods: {
@@ -185,9 +187,16 @@
                 }
             },
             isApply() {
+                this.axios.get("/getRoomSourceByRoomNO?roomNO=" + this.data.roomNO.roomNO).then(res => {
+                    if (res.data.data.length >0) {
+                        this.btnText = "该房屋已出租"
+                        this.isloading = false
+                    }
+                })
                 this.axios.get(`/Tenant/getApplyByIdNo?userID=${this.userID}&roomNO=${this.data.roomNO.roomNO}`).then(res => {
                     if (res.data.msg == "已申请") {
                         this.btnText = res.data.msg
+                        this.isloading = false
                     }
                 })
             }

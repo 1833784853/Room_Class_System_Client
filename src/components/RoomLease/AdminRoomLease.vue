@@ -236,12 +236,27 @@
                 })
             },
             // 添加合同
-            agreeAllRow() {
-
+            handleAdd(index, row) {
+                this.loading = true
+                this.axios.post("/addRoomLeaseList", {
+                    roomNO: row.roomNO.roomNO,
+                    userID: this.userID,
+                    contractUser: row.userID.userName
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success("添加成功")
+                        this.getAdminLease(this.currentPage - 1)
+                    } else {
+                        this.$message.error("添加失败")
+                    }
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
             },
             // 批量驳回
             deleteAllRow() {
-                this.isLoading = true
+                this.loading = true
                 this.axios.post("/Admin/editRefusebatch", {
                     applyID: this.deleteAllRowArr
                 }).then(res => {
@@ -251,9 +266,9 @@
                     } else {
                         this.$message.error("驳回失败")
                     }
-                    this.isLoading = false
+                    this.loading = false
                 }).catch(() => {
-                    this.isLoading = false
+                    this.loading = false
                 })
             },
             // 驳回合同
