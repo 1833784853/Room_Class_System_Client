@@ -5,7 +5,7 @@
                 <el-button-group v-if="btnSize == 'mini'">
                     <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()" :size="btnSize">
                     </el-button>
-                    <el-badge :value="totalPage" class="item">
+                    <el-badge :value="totalPageRoomLease" class="item">
                         <el-button type="warning" icon="el-icon-edit"
                                    @click="addDialogVisible = true" :size="btnSize">
                         </el-button>
@@ -17,7 +17,7 @@
                 <el-button-group v-else>
                     <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()" :size="btnSize">返回
                     </el-button>
-                    <el-badge :value="totalPage" class="item">
+                    <el-badge :value="totalPageRoomLease" class="item">
                         <el-button type="warning" icon="el-icon-edit"
                                    @click="addDialogVisible = true" :size="btnSize">添加合同信息
                         </el-button>
@@ -68,12 +68,12 @@
                             size="mini"
                             plain
                             type="primary"
-                            @click="handleDelete(scope.$index, scope.row)">查看合同
+                            @click="handleSee(scope.$index, scope.row)">查看合同
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">申请退租
+                            @click="handleDelete(scope.$index, scope.row)">终止合同
                     </el-button>
                 </template>
             </el-table-column>
@@ -191,6 +191,7 @@
                 handler(val) {
                     if (val === null || val === undefined || val === "") return
                     this.getAdminLease(0)
+                    this.getAdminLeaseRoomList(0)
                 },
                 immediate: true
             }
@@ -216,8 +217,24 @@
             }
         },
         methods: {
+            getAdminLeaseRoomList(currentPage) {
+                this.loading = true
+                this.axios.post("/getAllRoomLeaseByRent", {
+                    currentPage: currentPage,
+                    pageSize: this.pageSize
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.roomLeaseData = res.data.data
+                        this.totalPage = res.data.totalPage
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
+            },
             getAdminLease(pageSize) {
-                console.log(this.userID, pageSize, this.pageSize)
                 this.loading = true
                 this.axios.post("/cselectBystatu", {
                     currentPage: pageSize,
@@ -226,7 +243,7 @@
                     this.loading = false
                     if (res.data.code == 200) {
                         this.tableData = res.data.data
-                        this.totalPage = res.data.totalPage
+                        this.totalPageRoomLease = res.data.totalPage
                     } else {
                         this.$message.error("获取数据失败，请刷新后重试")
                     }
@@ -239,13 +256,16 @@
             handleAdd(index, row) {
                 this.loading = true
                 this.axios.post("/addRoomLeaseList", {
+                    applyID: row.applyID,
                     roomNO: row.roomNO.roomNO,
                     userID: this.userID,
-                    contractUser: row.userID.userName
+                    contractUser: row.userID.userName,
+                    userCard: row.userID.userCard
                 }).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("添加成功")
                         this.getAdminLease(this.currentPage - 1)
+                        this.getAdminLeaseRoomList(this.currentPage - 1)
                     } else {
                         this.$message.error("添加失败")
                     }
@@ -301,6 +321,27 @@
             // 在租列表里的分页触发
             handleCurrentChangeRoomLease(val) {
 
+            },
+            handleSee(index, row) {
+                let date = new Date();
+                let s = date.getFullYear() + "-" + date.getMonth() + 1 + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                let endTime = date.getFullYear() + 2 + "-" + date.getMonth() + 1 + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+
+                this.$router.push({
+                    name: 'seeContract',
+                    params: {
+                        roomAddress: row.roomNO.roomAddress,
+                        adminName: row.userID.userName,
+                        userName: row.contractUser,
+                        roomArea: row.roomNO.roomArea,
+                        time: s,
+                        endTime: endTime,
+                        adminCard: row.userID.userCard,
+                        userCard: row.userCard,
+                        price: row.roomNO.roomPrice,
+                        roomNO: row.roomNO.roomNO
+                    }
+                })
             }
         }
     }

@@ -188,16 +188,16 @@
             },
             isApply() {
                 this.axios.get("/getRoomSourceByRoomNO?roomNO=" + this.data.roomNO.roomNO).then(res => {
-                    if (res.data.data.length >0) {
+                    if (res.data.data.length > 0 && res.data.data.roomNO.roomStatus != '空闲') {
                         this.btnText = "该房屋已出租"
-                        this.isloading = false
                     }
+                    this.isloading = false
                 })
                 this.axios.get(`/Tenant/getApplyByIdNo?userID=${this.userID}&roomNO=${this.data.roomNO.roomNO}`).then(res => {
                     if (res.data.msg == "已申请") {
                         this.btnText = res.data.msg
-                        this.isloading = false
                     }
+                    this.isloading = false
                 })
             }
         }
