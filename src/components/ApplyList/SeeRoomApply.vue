@@ -106,7 +106,9 @@
 
                     <el-tag type="danger" v-else-if="scope.row.applyStatus == 2" style="margin-right: 10px">已拒绝申请
                     </el-tag>
-
+                    <el-tag type="success" v-else-if="scope.row.applyStatus == 3 && scope.row.roomNO.roomStatus != '空闲'"
+                            style="margin-right: 10px">已添加合同
+                    </el-tag>
                     <el-button
                             size="mini"
                             type="danger"
@@ -222,7 +224,7 @@
                 }).then(res => {
                     if (res.data.code === 200) {
                         this.$message.success("操作成功")
-                        this.getApplyAll(this.currentPage)
+                        this.getApplyAll(this.currentPage - 1)
                     } else {
                         this.$message.error("操作失败")
                     }
@@ -251,6 +253,7 @@
                 })
             },
             handleCurrentChange(val) {
+                this.currentPage = val
                 // 换页事件
                 this.getApplyAll(this.currentPage - 1)
             },

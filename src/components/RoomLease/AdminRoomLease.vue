@@ -73,7 +73,7 @@
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">终止合同
+                            @click="handleEndLease(scope.$index, scope.row)">终止合同
                     </el-button>
                 </template>
             </el-table-column>
@@ -103,7 +103,7 @@
                     </el-button-group>
                     <el-button-group v-else>
                         <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
-                                   @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"同意中..":"同意所有选中"}}
+                                   @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"添加中..":"添加所有选中"}}
                         </el-button>
                         <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
                                    @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"驳回中..":"驳回所有选中"}}
@@ -197,7 +197,7 @@
             }
         },
         mounted() {
-
+            this.updateMenuTitle("在租列表")
         },
         data() {
             return {
@@ -205,15 +205,16 @@
                 loadingRoom: false,
                 totalPage: 0,
                 pageSize: 10,
-                currentPage: 0,
-                currentPageRoomLease: 0,
+                currentPage: 1,
+                currentPageRoomLease: 1,
                 totalPageRoomLease: 0,
                 addDialogVisible: false,
                 showDelAllBtn: false,
                 delBtnIsLoading: false,
                 tableData: [],
                 deleteAllRowArr: [],
-                roomLeaseData: []
+                roomLeaseData: [],
+                roomLeaseListAdd: []
             }
         },
         methods: {
@@ -291,6 +292,23 @@
                     this.loading = false
                 })
             },
+            // 批量添加
+            agreeAllRow() {
+                this.loading = true
+                this.axios.post("/batchAddContract", {
+                    roomLeaseList: this.roomLeaseListAdd
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success("添加成功")
+                        this.getAdminLease(this.currentPage - 1)
+                    } else {
+                        this.$message.error("添加失败")
+                    }
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
+            },
             // 驳回合同
             handleDelete(index, row) {
                 this.loading = true
@@ -310,9 +328,18 @@
             // 多选框
             handleSelectionChange(data) {
                 this.deleteAllRowArr = []
+                this.roomLeaseListAdd = []
                 data.forEach(item => {
                     this.deleteAllRowArr.push(item.applyID)
+                    this.roomLeaseListAdd.push({
+                        applyID: item.applyID,
+                        roomNO: item.roomNO.roomNO,
+                        userID: this.userID,
+                        contractUser: item.userID.userName,
+                        userCard: item.userID.userCard
+                    })
                 })
+
                 this.showDelAllBtn = data.length >= 2
             },
             handleCurrentChange(val) {
@@ -341,6 +368,20 @@
                         price: row.roomNO.roomPrice,
                         roomNO: row.roomNO.roomNO
                     }
+                })
+            },
+            handleEndLease(index, row) {
+                this.loadingRoom = true
+                this.axios.post("/updateRoomLeaseList", {
+                    roomListID: row.roomListID,
+                    roomNO: row.roomNO.roomNO
+                }).then(res => {
+                    this.loadingRoom = false
+                    if (res.data.code == 200) {
+                        this.getAdminLeaseRoomList(this.currentPage - 1)
+                    }
+                }).catch(() => {
+                    this.loadingRoom = false
                 })
             }
         }

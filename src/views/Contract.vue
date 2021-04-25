@@ -1,10 +1,10 @@
 <template>
     <div>
         <div id="top">
-            <div style="margin-left: 100px; line-height: 55px; height: 55px; ">
+            <div style="margin-left: 100px; line-height: 55px; height: 55px; float: left;color: #fff">
                 房源编号:{{roomNO}}
             </div>
-            <div class="left" style="float: right;margin-right: 10px">
+            <div class="left" style="float: right;margin-right: 10px" @click="print()">
                 <svg t="1619102552137" class="icon myicon" viewBox="0 0 1024 1024" version="1.1"
                      xmlns="http://www.w3.org/2000/svg" p-id="2797">
                     <path d="M177.6 804.8H56c-17.6 0-24-6.4-24-24V548.8c0-62.4 46.4-110.4 108.8-112h38.4v-12.8V128c0-40 22.4-62.4 60.8-62.4h377.6c40 0 73.6 14.4 102.4 41.6l81.6 81.6c27.2 28.8 41.6 62.4 41.6 100.8v144H880c52.8 1.6 96 35.2 108.8 84.8 1.6 9.6 3.2 19.2 3.2 30.4v228.8c0 17.6-6.4 25.6-24 25.6h-123.2v88c0 12.8-3.2 25.6-11.2 36.8-11.2 16-27.2 22.4-46.4 22.4H241.6c-38.4 0-60.8-22.4-60.8-60.8v-83.2c-3.2 1.6-3.2 0-3.2-1.6zM768 288H678.4c-19.2 0-35.2-6.4-48-22.4-8-11.2-11.2-24-11.2-36.8V142.4h-368v368h515.2c1.6-75.2 1.6-148.8 1.6-222.4z m0 444.8H252.8V880H768v-147.2z m112-222.4c-20.8 0-36.8 17.6-36.8 36.8 0 19.2 16 36.8 36.8 36.8 20.8 0 36.8-16 36.8-36.8 0-20.8-16-36.8-36.8-36.8z"
@@ -102,6 +102,7 @@
             this.userCard = this.$route.params.userCard
             this.price = this.$route.params.price
             this.roomNO = this.$route.params.roomNO
+            this.endTime = this.$route.params.endTime
         },
         data() {
             return {
@@ -112,7 +113,13 @@
                 time: "",
                 userCard: "",
                 price: "",
-                roomNO: ""
+                roomNO: "",
+                endTime: ""
+            }
+        },
+        methods: {
+            print() {
+                window.print();
             }
         }
     }
@@ -137,12 +144,13 @@
     /*图标公共样式*/
     #top .myicon {
         padding: 5px;
-        margin-top: 5px;
+        margin-top: 7px;
+        margin-right: 10px;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        border: 1px solid #ccc;
+        width: 40px;
+        height: 40px;
         background-color: rgba(0, 0, 0, .2);
+        cursor: pointer;
     }
 
     #main {
@@ -157,20 +165,20 @@
 
     #main .temp {
         border-bottom: 1px solid black;
-        width: 192px;
+        min-width: 192px;
         display: inline-block;
         text-align: center;
         margin-right: 10px;
-        height: 20px;
+        padding: 0 20px;
     }
 
     #main .temp6 {
         border-bottom: 1px solid black;
-        width: 132px;
         display: inline-block;
         text-align: center;
         margin-right: 10px;
-        height: 20px;
+        padding: 0 20px;
+        min-width: 100px;
     }
 
     #main .temp1 {
@@ -179,7 +187,7 @@
         display: inline-block;
         text-align: center;
         margin-left: 10px;
-        height: 25px;
+        height: 28px;
     }
 
     #main .temp2 {
@@ -188,7 +196,7 @@
         display: inline-block;
         text-align: center;
         margin-left: 10px;
-        height: 25px;
+        height: 28px;
     }
 
     #main .temp3 {
@@ -197,7 +205,7 @@
         display: inline-block;
         text-align: center;
         margin-left: 10px;
-        height: 25px;
+        height: 28px;
     }
 
     #main .temp4 {
@@ -206,16 +214,15 @@
         display: inline-block;
         text-align: center;
         margin-left: 10px;
-        height: 25px;
+        height: 28px;
     }
 
     #main .temp5 {
         border-bottom: 1px solid black;
-        width: 150px;
         display: inline-block;
         text-align: center;
-        margin: 0px 10px;
-        height: 25px;
+        padding: 0px 10px;
+        height: 28px;
     }
 
     #title1 {
@@ -241,7 +248,7 @@
 
     #bottom .bottom {
         display: inline-block;
-        width: 150px;
+        width: 220px;
     }
 
     #bottom .year {
@@ -256,11 +263,11 @@
 
     #bottom .jg {
         display: inline-block;
-        width: 69px;
+        width: 135px;
     }
 
     #bottom .lx {
         display: inline-block;
-        width: 203px;
+        width: 266px;
     }
 </style>

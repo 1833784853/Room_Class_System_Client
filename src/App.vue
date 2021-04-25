@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <transition name="el-zoom-in-top">
+        <transition name="el-fade-in-linear">
             <router-view style="position: absolute;width: 100%"/>
         </transition>
     </div>

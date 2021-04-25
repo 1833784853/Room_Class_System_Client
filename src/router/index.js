@@ -21,6 +21,7 @@ import Daily from "../components/Daily/Daily";
 import UserRoomLease from "../components/RoomLease/UserRoomLease";
 import AdminRoomLease from "../components/RoomLease/AdminRoomLease";
 import Contract from "../views/Contract";
+import AdminReroomLease from "../components/RoomLease/AdminReroomLease";
 
 Vue.use(VueRouter)
 
@@ -157,6 +158,11 @@ const routes = [
                 name: '管理员在租列表',
                 component: AdminRoomLease
             },
+            {
+                path: 'relist',
+                name: 'adminRelist',
+                component: AdminReroomLease
+            }
         ],
         beforeEnter: (to, from, next) => {
             if (to.params.token !== undefined && localStorage.getItem("token") == null) {
