@@ -265,7 +265,7 @@
                 }).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("添加成功")
-                        this.getAdminLease(this.currentPage - 1)
+                        this.getAdminLease(this.currentPageRoomLease - 1)
                         this.getAdminLeaseRoomList(this.currentPage - 1)
                     } else {
                         this.$message.error("添加失败")
@@ -283,7 +283,8 @@
                 }).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("驳回成功")
-                        this.getAdminLease(this.currentPage - 1)
+                        this.getAdminLease(this.currentPageRoomLease - 1)
+                        this.getAdminLeaseRoomList(this.currentPage - 1)
                     } else {
                         this.$message.error("驳回失败")
                     }
@@ -318,6 +319,7 @@
                     if (res.data.code == 200) {
                         this.$message.success("驳回成功")
                         this.getAdminLease(this.currentPage - 1)
+                        this.getAdminLeaseRoomList(this)
 
                     } else {
                         this.$message.error("驳回失败")

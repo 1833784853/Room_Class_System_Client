@@ -74,7 +74,10 @@
             userID: {
                 handler(val) {
                     if (val === null || val === undefined || val === "") return
-                    this.getUserLease(0)
+                    this.axios.get(`/getUserInfo?userID=${val}`).then(res=>{
+                        this.card = res.data.userCard
+                        this.getUserLease(this.currentPage -1)
+                    })
                 },
                 immediate: true
             }
@@ -87,16 +90,17 @@
                 loading: false,
                 totalPage: 0,
                 pageSize: 10,
-                currentPage: 0,
-                tableData: []
+                currentPage: 1,
+                tableData: [],
+                card:""
             }
         },
         methods: {
             getUserLease(pageSize) {
                 console.log(this.userID,pageSize,this.pageSize)
                 this.loading = true
-                this.axios.post("/selectBystatu",{
-                    userID:this.userID,
+                this.axios.post("/getRoomLeaseByRent",{
+                    userCard:this.card,
                     currentPage:pageSize,
                     pageSize:this.pageSize
                 }).then(res => {
