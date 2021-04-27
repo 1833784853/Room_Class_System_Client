@@ -40,12 +40,12 @@
                             size="mini"
                             plain
                             type="primary"
-                            @click="handleDelete(scope.$index, scope.row)">查看合同
+                            @click="seeLease(scope.$index, scope.row)">查看合同
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">申请退租
+                            @click="reLease(scope.$index, scope.row)">申请退租
                     </el-button>
 
                 </template>
@@ -68,22 +68,23 @@
     export default {
         name: "UserRoomLease",
         props: {
+            updateMenuTitle:Function,
             userID: String
         },
         watch: {
             userID: {
                 handler(val) {
                     if (val === null || val === undefined || val === "") return
-                    this.axios.get(`/getUserInfo?userID=${val}`).then(res=>{
-                        this.card = res.data.userCard
-                        this.getUserLease(this.currentPage -1)
+                    this.axios.get(`/getUserInfo?userID=${val}`).then(res => {
+                        this.card = res.data.data[0].userCard
+                        this.getUserLease(this.currentPage - 1)
                     })
                 },
                 immediate: true
             }
         },
         mounted() {
-
+            this.updateMenuTitle("在租列表")
         },
         data() {
             return {
@@ -92,17 +93,17 @@
                 pageSize: 10,
                 currentPage: 1,
                 tableData: [],
-                card:""
+                card: ""
             }
         },
         methods: {
             getUserLease(pageSize) {
-                console.log(this.userID,pageSize,this.pageSize)
+                console.log(this.userID, pageSize, this.pageSize, this.card)
                 this.loading = true
-                this.axios.post("/getRoomLeaseByRent",{
-                    userCard:this.card,
-                    currentPage:pageSize,
-                    pageSize:this.pageSize
+                this.axios.post("/getRoomLeaseByRent", {
+                    userCard: this.card,
+                    currentPage: pageSize,
+                    pageSize: this.pageSize
                 }).then(res => {
                     this.loading = false
                     if (res.data.code == 200) {
@@ -116,18 +117,42 @@
                     this.$message.error("获取数据失败，请刷新后重试")
                 })
             },
-            handleDelete(index, row) {
+            seeLease(index, row) {
+                let date = new Date(row.contractTime);
+                let s = date.getFullYear() + "-" + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth()) + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                let endTime = date.getFullYear() + 2 + "-" + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth()) + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+
+                this.$router.push({
+                    name: 'seeContract',
+                    params: {
+                        roomAddress: row.roomNO.roomAddress,
+                        adminName: row.userID.userName,
+                        userName: row.contractUser,
+                        roomArea: row.roomNO.roomArea,
+                        time: s,
+                        endTime: endTime,
+                        adminCard: row.userID.userCard,
+                        userCard: row.userCard,
+                        price: row.roomNO.roomPrice,
+                        roomNO: row.roomNO.roomNO
+                    }
+                })
+            },
+            reLease(index, row) {
                 this.loading = true
-                this.axios.post("/Tenant/deleteApply", {
-                    applyID: row.applyID
+                this.axios.post("/tenantVacating", {
+                    roomListID: row.roomListID,
+                    userID: this.userID,
+                    roomNO: row.roomNO.roomNO
                 }).then(res => {
+                    this.loading = false
                     if (res.data.code == 200) {
                         this.$message.success(res.data.msg)
                         this.getUserLease(this.currentPage - 1)
-
                     } else {
                         this.$message.error(res.data.msg)
                     }
+                }).catch(() => {
                     this.loading = false
                 })
             },

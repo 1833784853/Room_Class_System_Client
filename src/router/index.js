@@ -22,6 +22,8 @@ import UserRoomLease from "../components/RoomLease/UserRoomLease";
 import AdminRoomLease from "../components/RoomLease/AdminRoomLease";
 import Contract from "../views/Contract";
 import AdminReroomLease from "../components/RoomLease/AdminReroomLease";
+import UserReroomLease from "../components/RoomLease/UserReroomLease";
+import UserSeeRoomList from "../components/RoomSource/UserSeeRoomList";
 
 Vue.use(VueRouter)
 
@@ -162,7 +164,18 @@ const routes = [
                 path: 'relist',
                 name: 'adminRelist',
                 component: AdminReroomLease
+            },
+            {
+                path: 'userreleaselist',
+                name: "userreleaselist",
+                component: UserReroomLease
+            },
+            {
+                path: "userroomlist",
+                name: "userroomlist",
+                component: UserSeeRoomList
             }
+
         ],
         beforeEnter: (to, from, next) => {
             if (to.params.token !== undefined && localStorage.getItem("token") == null) {
