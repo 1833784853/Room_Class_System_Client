@@ -24,6 +24,7 @@ import Contract from "../views/Contract";
 import AdminReroomLease from "../components/RoomLease/AdminReroomLease";
 import UserReroomLease from "../components/RoomLease/UserReroomLease";
 import UserSeeRoomList from "../components/RoomSource/UserSeeRoomList";
+import AdminAppleReroom from "../components/ApplyList/AdminAppleReroom";
 
 Vue.use(VueRouter)
 
@@ -174,6 +175,11 @@ const routes = [
                 path: "userroomlist",
                 name: "userroomlist",
                 component: UserSeeRoomList
+            },
+            {
+                path: "reroom",
+                name: "reroom",
+                component: AdminAppleReroom
             }
 
         ],

@@ -12,7 +12,7 @@
                           :active-color="activeColor" :flag="flag" :userID="userID"/>
             </el-header>
             <el-main :style="{backgroundColor:lineBgc}">
-                <div class="main">
+                <div class="main" :style="{backgroundColor:bgc}">
                     <transition name="el-fade-in-linear">
                         <router-view :small="isSmall" :updateMenuTitle="updateMenuTitle"
                                      :btnSize="btnSize" :style="{position:'absolute',width:'100%'}" :bgc="bgc"
@@ -215,7 +215,7 @@
         }
 
         #app .el-main {
-            padding: 20px !important;
+            padding: 10px !important;
         }
 
         .main {

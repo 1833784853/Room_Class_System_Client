@@ -27,34 +27,34 @@
                     type="selection"
                     width="55" v-if="userType == '管理员'">
             </el-table-column>
-<!--            <el-table-column type="expand">-->
-<!--                <template slot-scope="props">-->
-<!--                    <el-form label-position="left" inline class="demo-table-expand">-->
-<!--                        <el-form-item label="房源编号">-->
-<!--                            <span>{{props.row.data }}</span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="发布人">-->
-<!--                            <span>{{props.row.data.user }}</span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="更新时间">-->
-<!--                            <span>{{props.row.data.roomLatelyTime }}</span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="联系电话">-->
-<!--                            <span>{{props.row.data.user.userPhone }}</span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="面积">-->
-<!--                            <span>{{props.row.data.roomArea  }}<el-tag-->
-<!--                                    style="margin-left:10px;">（㎡）</el-tag></span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="地址">-->
-<!--                            <span>{{props.row.data.roomAddress  }}</span>-->
-<!--                        </el-form-item>-->
-<!--                        <el-form-item label="价格">-->
-<!--                            <span><el-tag type="danger">￥{{props.row.data.roomPrice }}</el-tag></span>-->
-<!--                        </el-form-item>-->
-<!--                    </el-form>-->
-<!--                </template>-->
-<!--            </el-table-column>-->
+            <!--            <el-table-column type="expand">-->
+            <!--                <template slot-scope="props">-->
+            <!--                    <el-form label-position="left" inline class="demo-table-expand">-->
+            <!--                        <el-form-item label="房源编号">-->
+            <!--                            <span>{{props.row.data }}</span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="发布人">-->
+            <!--                            <span>{{props.row.data.user }}</span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="更新时间">-->
+            <!--                            <span>{{props.row.data.roomLatelyTime }}</span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="联系电话">-->
+            <!--                            <span>{{props.row.data.user.userPhone }}</span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="面积">-->
+            <!--                            <span>{{props.row.data.roomArea  }}<el-tag-->
+            <!--                                    style="margin-left:10px;">（㎡）</el-tag></span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="地址">-->
+            <!--                            <span>{{props.row.data.roomAddress  }}</span>-->
+            <!--                        </el-form-item>-->
+            <!--                        <el-form-item label="价格">-->
+            <!--                            <span><el-tag type="danger">￥{{props.row.data.roomPrice }}</el-tag></span>-->
+            <!--                        </el-form-item>-->
+            <!--                    </el-form>-->
+            <!--                </template>-->
+            <!--            </el-table-column>-->
 
             <el-table-column
                     prop="roomTime"
@@ -78,7 +78,8 @@
                             size="mini"
                             type="primary"
                             plain
-                            @click="handleSee(scope.$index, scope.row)">申请看房
+                            :disabled="scope.row.btnText!= '申请看房'"
+                            @click="handleSee(scope.$index, scope.row)">{{scope.row.btnText}}
                     </el-button>
 
                 </template>
@@ -120,7 +121,6 @@
         },
         mounted() {
             this.updateMenuTitle("房源列表")
-
         },
         data() {
 
@@ -160,20 +160,18 @@
                 }
                 this.deleteAllRowArr = rows;
             },
-            handleSee(index,row) {
+            handleSee(index, row) {
+                console.log(row)
                 this.isLoading = true
                 this.$message.warning("申请中..")
-                this.axios.get(`/getRoomSourceByStatus?userID=${this.userID}&roomNO=${row.roomNO ? row.roomNO : row.data.roomNO}`).then(res => {
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            this.$message.success(res.data.msg)
-                            this.getTenantRoomList(this.currentPage - 1)
-                        } else {
-                            this.$message.error(res.data.msg)
-                        }
-                        this.isLoading = false
-                    }
-                }).catch(() => {
+                this.axios.post("/Tenant/roomapply", {
+                    userID: this.userID,
+                    roomNO: row.roomNO
+                }).then(res => {
+                    this.$message.success(res.data.msg)
+                    this.isLoading = false
+                    this.isApply(row)
+                }).catch(err => {
                     this.isLoading = false
                 })
             },
@@ -184,13 +182,35 @@
                     pageSize: this.pageSize
                 }).then(res => {
                     if (res.status == 200) {
-                        this.tableData = res.data.data
+                        res.data.data.forEach(async item => {
+                            await this.isApply(item)
+                            this.tableData = res.data.data
+                        })
                         this.totalPage = res.data.totalPage
                     }
                     this.isLoading = false
                 }).catch(() => {
                     this.isLoading = false
                 })
+            },
+            async isApply(row) {
+                await this.axios.get(`/Tenant/getApplyByIdNo?userID=${this.userID}&roomNO=${row.roomNO}`).then(res => {
+                    console.log(res.data)
+                    if (res.data.msg == "已申请") {
+                        row.btnText = res.data.msg
+                    }
+                    this.axios.get("/getRoomSourceByRoomNO?roomNO=" + row.roomNO).then(res => {
+                        console.log(res)
+                        if (res.data.data.length > 0 && res.data.data[0].roomStatus != '空闲') {
+                            row.btnText = "该房屋已出租"
+                        } else if (!row.btnText) {
+                            row.btnText = "申请看房"
+                        }
+                        this.isloading = false
+                    })
+                    this.isloading = false
+                })
+
             }
         }
     }

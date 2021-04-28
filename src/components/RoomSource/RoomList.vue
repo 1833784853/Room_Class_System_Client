@@ -1,5 +1,5 @@
 <template>
-    <div class="room-list-box">
+    <div class="room-list-box" :style="{backgroundColor:bgc,color:textColor}">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <el-button-group v-if="btnSize == 'mini'">
@@ -28,7 +28,10 @@
                 :data="tableData"
                 style="width: 100%"
                 v-loading="isLoading"
-                @selection-change="handleSelectionChange">
+                @selection-change="handleSelectionChange"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     type="selection"
                     width="55" v-if="userType == '管理员'">
@@ -200,7 +203,9 @@
             updateMenuTitle: Function,
             userType: String,
             userID: String,
-            btnSize: String
+            btnSize: String,
+            bgc: String,
+            textColor:String,
         },
         mounted() {
             this.updateMenuTitle("房源列表")

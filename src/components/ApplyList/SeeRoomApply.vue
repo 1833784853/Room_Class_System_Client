@@ -109,6 +109,12 @@
                     <el-tag type="success" v-else-if="scope.row.applyStatus == 3 && scope.row.roomNO.roomStatus != '空闲'"
                             style="margin-right: 10px">已添加合同
                     </el-tag>
+                    <el-tag type="success" v-else-if="scope.row.applyStatus == 3 && scope.row.roomNO.roomStatus == '空闲'"
+                            style="margin-right: 10px">可以添加合同
+                    </el-tag>
+                    <el-tag type="warning" v-else-if="scope.row.applyStatus == 4 "
+                            style="margin-right: 10px">正在申请退租
+                    </el-tag>
                     <el-button
                             size="mini"
                             type="danger"
