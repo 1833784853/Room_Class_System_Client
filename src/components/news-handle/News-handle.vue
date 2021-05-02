@@ -7,7 +7,10 @@
             <el-table
                     :data="tableData"
                     style="width: 100%"
-                    v-loading="isLoading">
+                    v-loading="isLoading"
+                    :row-style="{backgroundColor: bgc}"
+                    :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                    :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
                 <el-table-column
                         type="selection"
                         width="55">
@@ -95,7 +98,9 @@
     export default {
         name: "News-handle",
         props: {
-            updateMenuTitle: Function
+            updateMenuTitle: Function,
+            bgc:String,
+            textColor:String
         },
         mounted() {
             this.updateMenuTitle("新闻管理")

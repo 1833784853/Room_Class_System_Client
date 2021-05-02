@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" :style="{backgroundColor: bgc}">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <el-button-group v-if="btnSize == 'mini'">
@@ -30,7 +30,10 @@
         </el-row>
         <el-table
                 :data="roomLeaseData"
-                style="width: 100%" v-loading="loadingRoom">
+                style="width: 100%" v-loading="loadingRoom"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     label="房屋编号"
             >
@@ -90,91 +93,103 @@
         <el-dialog
                 :visible.sync="addDialogVisible"
                 class="html-dialog"
-                :close-on-click-modal="false">
-            <el-row class="top">
-                <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                    <el-button-group v-if="btnSize == 'mini'">
-                        <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
-                                   @click="agreeAllRow" :size="btnSize">
-                        </el-button>
-                        <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
-                                   @click="deleteAllRow" :size="btnSize">
-                        </el-button>
-                    </el-button-group>
-                    <el-button-group v-else>
-                        <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
-                                   @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"添加中..":"添加所有选中"}}
-                        </el-button>
-                        <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
-                                   @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"驳回中..":"驳回所有选中"}}
-                        </el-button>
-                    </el-button-group>
-                </el-col>
-            </el-row>
-            <el-table
-                    :data="tableData"
-                    style="width: 100%" v-loading="loading"
-                    @selection-change="handleSelectionChange">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column
-                        label="房屋编号"
-                >
-                    <template slot-scope="scope">
-                        <i class="el-icon-key"></i>
-                        <span style="margin-left: 10px">{{ scope.row.roomNO.roomNO }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        label="地址"
-                        prop="roomNO.roomAddress">
-                </el-table-column>
-                <el-table-column
-                        label="价格">
-                    <template slot-scope="scope">
-                        <i class="el-icon-money"></i>
-                        <span style="margin-left: 10px">{{ scope.row.roomNO.roomPrice }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        label="租赁人"
-                        prop="userID.userName">
-                </el-table-column>
-                <el-table-column
-                        label="租赁人身份证号"
-                        prop="userID.userCard">
-                </el-table-column>
-                <el-table-column
-                        label="租赁人联系方式"
-                        prop="userID.userID.userPhone">
-                </el-table-column>
-                <el-table-column label="操作" width="200px">
-                    <template slot-scope="scope">
-                        <el-button
-                                size="mini"
-                                plain
-                                type="success"
-                                @click="handleAdd(scope.$index, scope.row)">添加合同
-                        </el-button>
-                        <el-button
-                                size="mini"
-                                type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">驳回申请
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :total="totalPage"
-                    :page-size="pageSize"
-                    style="margin-top: 20px"
-                    @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage">
-            </el-pagination>
+                :close-on-click-modal="false"
+        >
+
+            <div :style="{backgroundColor: bgc}">
+                <el-row class="top">
+                    <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+                        <el-button-group v-if="btnSize == 'mini'">
+                            <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading"
+                                       icon="el-icon-check"
+                                       @click="agreeAllRow" :size="btnSize">
+                            </el-button>
+                            <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading"
+                                       icon="el-icon-close"
+                                       @click="deleteAllRow" :size="btnSize">
+                            </el-button>
+                        </el-button-group>
+                        <el-button-group v-else>
+                            <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading"
+                                       icon="el-icon-check"
+                                       @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"添加中..":"添加所有选中"}}
+                            </el-button>
+                            <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading"
+                                       icon="el-icon-close"
+                                       @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"驳回中..":"驳回所有选中"}}
+                            </el-button>
+                        </el-button-group>
+                    </el-col>
+                </el-row>
+                <el-table
+                        :data="tableData"
+                        style="width: 100%" v-loading="loading"
+                        @selection-change="handleSelectionChange"
+                        :row-style="{backgroundColor: bgc}"
+                        :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                        :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            label="房屋编号"
+                    >
+                        <template slot-scope="scope">
+                            <i class="el-icon-key"></i>
+                            <span style="margin-left: 10px">{{ scope.row.roomNO.roomNO }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="地址"
+                            prop="roomNO.roomAddress">
+                    </el-table-column>
+                    <el-table-column
+                            label="价格">
+                        <template slot-scope="scope">
+                            <i class="el-icon-money"></i>
+                            <span style="margin-left: 10px">{{ scope.row.roomNO.roomPrice }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="租赁人"
+                            prop="userID.userName">
+                    </el-table-column>
+                    <el-table-column
+                            label="租赁人身份证号"
+                            prop="userID.userCard">
+                    </el-table-column>
+                    <el-table-column
+                            label="租赁人联系方式"
+                            prop="userID.userID.userPhone">
+                    </el-table-column>
+                    <el-table-column label="操作" width="200px">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    plain
+                                    type="success"
+                                    @click="handleAdd(scope.$index, scope.row)">添加合同
+                            </el-button>
+                            <el-button
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.$index, scope.row)">驳回申请
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination
+                        background
+                        layout="prev, pager, next"
+                        :total="totalPage"
+                        :page-size="pageSize"
+                        style="margin-top: 20px"
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="currentPage">
+                </el-pagination>
+            </div>
+
         </el-dialog>
     </div>
 </template>
@@ -184,7 +199,9 @@
         name: "AdminRoomLease",
         props: {
             userID: String,
-            btnSize: String
+            btnSize: String,
+            bgc: String,
+            textColor: String
         },
         watch: {
             userID: {
@@ -301,7 +318,8 @@
                 }).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("添加成功")
-                        this.getAdminLease(this.currentPage - 1)
+                        this.getAdminLease(this.currentPageRoomLease - 1)
+                        this.getAdminLeaseRoomList(this.currentPage - 1)
                     } else {
                         this.$message.error("添加失败")
                     }

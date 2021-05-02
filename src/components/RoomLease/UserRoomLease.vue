@@ -1,8 +1,11 @@
 <template>
-    <div class="container">
+    <div class="container" :style="{backgroundColor: bgc}">
         <el-table
                 :data="tableData"
-                style="width: 100%" v-loading="loading">
+                style="width: 100%" v-loading="loading"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     label="房屋编号"
             >
@@ -47,7 +50,6 @@
                             type="danger"
                             @click="reLease(scope.$index, scope.row)">申请退租
                     </el-button>
-
                 </template>
             </el-table-column>
         </el-table>
@@ -68,8 +70,10 @@
     export default {
         name: "UserRoomLease",
         props: {
-            updateMenuTitle:Function,
-            userID: String
+            updateMenuTitle: Function,
+            userID: String,
+            bgc: String,
+            textColor: String
         },
         watch: {
             userID: {
@@ -141,10 +145,12 @@
             reLease(index, row) {
                 this.loading = true
                 this.axios.post("/tenantVacating", {
+                    applyID: row.applyID.applyID,
                     roomListID: row.roomListID,
                     userID: this.userID,
                     roomNO: row.roomNO.roomNO
                 }).then(res => {
+                    console.log(res);
                     this.loading = false
                     if (res.data.code == 200) {
                         this.$message.success(res.data.msg)

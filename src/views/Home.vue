@@ -215,7 +215,7 @@
         }
 
         #app .el-main {
-            padding: 10px !important;
+            padding: 10px 20px !important;
         }
 
         .main {

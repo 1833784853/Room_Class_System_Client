@@ -16,7 +16,7 @@
                     <el-button type="primary" icon="el-icon-arrow-left" @click="$router.back()" :size="btnSize">返回
                     </el-button>
                     <el-button v-show="showDelAllBtn" type="success" :loading="delBtnIsLoading" icon="el-icon-check"
-                               @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"添加中..":"添加所有选中"}}
+                               @click="agreeAllRow" :size="btnSize">{{delBtnIsLoading?"同意中..":"同意所有选中"}}
                     </el-button>
                     <el-button v-show="showDelAllBtn" type="danger" :loading="delBtnIsLoading" icon="el-icon-close"
                                @click="deleteAllRow" :size="btnSize">{{delBtnIsLoading?"驳回中..":"驳回所有选中"}}
@@ -100,8 +100,8 @@
             updateMenuTitle: Function,
             userID: String,
             btnSize: String,
-            bgc:String,
-            textColor:String
+            bgc: String,
+            textColor: String
         },
         watch: {
             userID: {
@@ -119,6 +119,9 @@
                 totalPage: 1,
                 pageSize: 10,
                 tableData: [],
+                applyIDArr: [],
+                roomNOArr: [],
+                roomListIDArr: [],
                 delBtnIsLoading: false,
                 showDelAllBtn: false,
                 currentPage: 1,
@@ -128,23 +131,94 @@
         methods: {
             // 同意
             handleAgree(index, row) {
-
+                this.loading = true
+                this.axios.post("/Admin/editAgreeRefund", {
+                    applyID: row.applyID,
+                    roomListID: row.roomListID,
+                    roomNO: row.roomNO.roomNO
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyReroom(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
             },
             // 驳回
-            handleDelete() {
-
+            handleDelete(index, row) {
+                this.loading = true
+                this.axios.post("/Admin/editRefuseRefund", {
+                    applyID: row.applyID,
+                    roomNO: row.roomNO.roomNO,
+                    roomListID: row.roomListID
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyReroom(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.loading = false
+                }).catch(() => {
+                    this.loading = false
+                })
             },
             // 页面变化时触发
             handleCurrentChange(val) {
                 this.getApplyReroom(val - 1)
-
             },
             // 批量同意
             agreeAllRow() {
-
+                this.delBtnIsLoading = true
+                this.axios.post("/Admin/editAgreeRefundList", {
+                    applyID: this.applyIDArr,
+                    roomNO: this.roomNOArr,
+                    roomListID: this.roomListIDArr
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyReroom(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.delBtnIsLoading = false
+                }).catch(() => {
+                    this.delBtnIsLoading = false
+                })
+            },
+            deleteAllRow() {
+                this.delBtnIsLoading = true
+                this.axios.post("/Admin/editRefuseRefundList",{
+                    applyID: this.applyIDArr,
+                    roomNO: this.roomNOArr,
+                    roomListID: this.roomListIDArr
+                }).then(res=>{
+                    if (res.data.code==200) {
+                        this.$message.success(res.data.msg)
+                        this.getApplyReroom(this.currentPage - 1)
+                    } else {
+                        this.$message.error(res.data.msg)
+                    }
+                    this.delBtnIsLoading = false
+                }).catch(()=>{
+                    this.delBtnIsLoading = false
+                })
             },
             // 多选框
             handleSelectionChange(val) {
+                this.applyIDArr = []
+                this.roomListIDArr = []
+                this.roomNOArr = []
+                this.showDelAllBtn = val.length >= 2
+                val.forEach(item => {
+                    this.applyIDArr.push(item.applyID)
+                    this.roomListIDArr.push(item.roomListID)
+                    this.roomNOArr.push(item.roomNO.roomNO)
+                })
             },
             getApplyReroom(currentPage) {
                 this.loading = true

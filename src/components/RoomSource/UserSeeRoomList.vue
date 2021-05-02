@@ -1,5 +1,5 @@
 <template>
-    <div class="room-list-box">
+        <div class="room-list-box" :style="{backgroundColor: bgc}">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <el-button-group v-if="btnSize == 'mini'">
@@ -22,7 +22,10 @@
                 :data="tableData"
                 style="width: 100%"
                 v-loading="isLoading"
-                @selection-change="handleSelectionChange">
+                @selection-change="handleSelectionChange"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     type="selection"
                     width="55" v-if="userType == '管理员'">
@@ -99,7 +102,6 @@
 </template>
 
 <script>
-    import {Message} from 'element-ui'
 
     export default {
         name: "UserSeeRoomList",
@@ -107,12 +109,15 @@
             updateMenuTitle: Function,
             userType: String,
             userID: String,
-            btnSize: String
+            btnSize: String,
+            bgc: String,
+            textColor: String
         },
         watch: {
             userID: {
                 handler(val) {
-                    if (val != undefined || val != "") {
+                    console.log(val)
+                    if (val != undefined && val != "") {
                         this.getTenantRoomList(0)
                     }
                 },
@@ -169,8 +174,8 @@
                     roomNO: row.roomNO
                 }).then(res => {
                     this.$message.success(res.data.msg)
+                    this.getTenantRoomList(this.currentPage - 1)
                     this.isLoading = false
-                    this.isApply(row)
                 }).catch(err => {
                     this.isLoading = false
                 })
@@ -182,9 +187,9 @@
                     pageSize: this.pageSize
                 }).then(res => {
                     if (res.status == 200) {
-                        res.data.data.forEach(async item => {
-                            await this.isApply(item)
-                            this.tableData = res.data.data
+                        this.tableData = []
+                        res.data.data.forEach(item => {
+                            this.isApply(item)
                         })
                         this.totalPage = res.data.totalPage
                     }
@@ -194,21 +199,21 @@
                 })
             },
             async isApply(row) {
+                this.isloading = true
                 await this.axios.get(`/Tenant/getApplyByIdNo?userID=${this.userID}&roomNO=${row.roomNO}`).then(res => {
                     console.log(res.data)
                     if (res.data.msg == "已申请") {
                         row.btnText = res.data.msg
                     }
                     this.axios.get("/getRoomSourceByRoomNO?roomNO=" + row.roomNO).then(res => {
-                        console.log(res)
                         if (res.data.data.length > 0 && res.data.data[0].roomStatus != '空闲') {
                             row.btnText = "该房屋已出租"
                         } else if (!row.btnText) {
                             row.btnText = "申请看房"
                         }
+                        this.tableData.push(row)
                         this.isloading = false
                     })
-                    this.isloading = false
                 })
 
             }

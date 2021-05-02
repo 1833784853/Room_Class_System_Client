@@ -192,9 +192,9 @@
                         this.btnText = res.data.msg
                     }
                     this.axios.get("/getRoomSourceByRoomNO?roomNO=" + this.data.roomNO.roomNO).then(res => {
-                        if (res.data.data.length > 0 && res.data.data[0].roomNO.roomStatus != '空闲') {
+                        if (res.data.data.length > 0 && res.data.data[0].roomStatus != '空闲') {
                             this.btnText = "该房屋已出租"
-                        } else {
+                        } else if (this.btnText != '已申请') {
                             this.btnText = "申请看房"
                         }
                         this.isloading = false

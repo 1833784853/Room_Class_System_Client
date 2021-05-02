@@ -1,5 +1,5 @@
 <template>
-    <div class="room-list-box">
+    <div class="room-list-box" :style="{backgroundColor: bgc}">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <el-button-group v-if="btnSize == 'mini'">
@@ -21,7 +21,10 @@
         <el-table
                 :data="tableData"
                 style="width: 100%" v-loading="loading"
-                @selection-change="handleSelectionChange">
+                @selection-change="handleSelectionChange"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     type="selection"
                     width="55">
@@ -86,7 +89,9 @@
             updateMenuTitle: Function,
             userType: String,
             userID: String,
-            btnSize: String
+            btnSize: String,
+            bgc:String,
+            textColor:String
         },
         watch: {
             userID: {
@@ -97,7 +102,7 @@
                         this.getReroomLeaseList(this.currentPage - 1)
                     })
                 },
-                immediate:true
+                immediate: true
             },
             tableData: {
                 handler(val) {
@@ -117,7 +122,7 @@
                 currentPage: 1,
                 delBtnIsLoading: false,
                 showDelAllBtn: false,
-                card:""
+                card: ""
             }
         },
         mounted() {
@@ -127,7 +132,7 @@
             getReroomLeaseList(currentPage) {
                 this.loading = true
                 this.axios.post("/getRoomLeaseByWithout", {
-                    userCard:this.card,
+                    userCard: this.card,
                     currentPage,
                     pageSize: this.pageSize
                 }).then(res => {
@@ -141,7 +146,7 @@
             // 多选框钩子
             handleSelectionChange(val) {
                 this.selectBoxData = []
-                val.forEach(item=>{
+                val.forEach(item => {
                     this.selectBoxData.push(item.roomListID)
                 })
                 this.showDelAllBtn = this.selectBoxData.length >= 2

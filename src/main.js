@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import './plugins/element.js'
+import store from "./store"
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import qs from 'qs'
@@ -46,5 +47,6 @@ axios.interceptors.response.use(function (response) {
 
 new Vue({
     router,
-    render: h => h(App)
+    render: h => h(App),
+    store:store
 }).$mount('#app')

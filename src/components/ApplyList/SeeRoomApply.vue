@@ -1,5 +1,5 @@
 <template>
-    <div class="room-list-box">
+    <div class="room-list-box" :style="{backgroundColor: bgc}">
         <el-row class="top">
             <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <el-button-group v-if="btnSize == 'mini'">
@@ -37,7 +37,10 @@
                 :data="tableData"
                 style="width: 100%"
                 v-loading="isLoading"
-                @selection-change="handleSelectionChange">
+                @selection-change="handleSelectionChange"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     type="selection"
                     width="55" v-if="userType == '管理员'">
@@ -143,7 +146,9 @@
             updateMenuTitle: Function,
             userType: String,
             userID: String,
-            btnSize: String
+            btnSize: String,
+            bgc:String,
+            textColor: String
         },
         mounted() {
             this.updateMenuTitle("看房申请列表")
@@ -175,6 +180,11 @@
                 this.axios.get(`/Admin/getlistAll?currentPage=${currentPage}&pageSize=${this.pageSize}`).then(res => {
                     this.tableData = res.data.data
                     this.totalPage = res.data.totalPage
+
+                    // 更新标记
+                    // this.store.commit("updateApplyCount", {
+                    //     count: res.data.data.filter(item => item.applyStatus == 0).length
+                    // })
                     this.isLoading = false
                 }).catch(err => {
                     this.isLoading = false
@@ -248,7 +258,7 @@
                 }).then(res => {
                     if (res.data.code === 200) {
                         this.$message.success("操作成功")
-                        this.getApplyAll(this.currentPage)
+                        this.getApplyAll(this.currentPage - 1)
                     } else {
                         this.$message.error("操作失败")
                     }

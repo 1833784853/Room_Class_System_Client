@@ -2,7 +2,10 @@
     <div class="container">
         <el-table
                 :data="tableData"
-                style="width: 100%" v-loading="loading">
+                style="width: 100%" v-loading="loading"
+                :row-style="{backgroundColor: bgc}"
+                :cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'"
+                :header-cell-style="'background-color:'+bgc+'!important;color:'+textColor+'!important;'">
             <el-table-column
                     label="房屋编号"
             >
@@ -69,7 +72,9 @@
     export default {
         name: "UserRoomList",
         props: {
-            userID: String
+            userID: String,
+            bgc: String,
+            textColor: String
         },
         watch: {
             userID: {
@@ -127,7 +132,7 @@
 
             },
             handleCurrentChange(val) {
-                this.getUserApply(val-1)
+                this.getUserApply(val - 1)
             }
         }
     }
