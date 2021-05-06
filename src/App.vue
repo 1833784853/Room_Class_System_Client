@@ -53,4 +53,12 @@
     #app .el-calendar-day {
         height: 100px;
     }
+    #app .dialogWrite {
+        background-color: #fff;
+        color: #909399;
+    }
+    #app .dialogBlank {
+        background-color: #100C2A;
+        color: #fff;
+    }
 </style>

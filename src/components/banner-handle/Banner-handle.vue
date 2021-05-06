@@ -1,5 +1,5 @@
 <template>
-    <div class="banner-box" v-loading="isLoading">
+    <div class="banner-box" v-loading="isLoading" :style="{backgroundColor:bgc,color:textColor,transition: 'all .6s'}">
         <div class="top">
             <el-button :size="btnSize" type="primary" plain @click="showAddBox = true">添加轮播图</el-button>
         </div>
@@ -12,9 +12,9 @@
                         </div>
                     </el-image>
                     <div class="title">
-                        <h4>{{ item.bannerTitle }}</h4>
+                        <h4 :style="{color:textColor}">{{ item.bannerTitle }}</h4>
                     </div>
-                    <p>{{ item.bannerContent }}</p>
+                    <p :style="{color:textColor}">{{ item.bannerContent }}</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,9 @@ export default {
     props: {
         updateMenuTitle: Function,
         formLabelPosition: String,
-        btnSize: String
+        btnSize: String,
+        bgc:String,
+        textColor:String
 
     },
     mounted() {

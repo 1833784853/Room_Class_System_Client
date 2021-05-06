@@ -94,6 +94,7 @@
                 :visible.sync="addDialogVisible"
                 class="html-dialog"
                 :close-on-click-modal="false"
+                :customClass="bgc == '#fff'?'dialogWrite':'dialogBlank'"
         >
 
             <div :style="{backgroundColor: bgc}">
@@ -371,8 +372,8 @@
             },
             handleSee(index, row) {
                 let date = new Date();
-                let s = date.getFullYear() + "-" + date.getMonth() + 1 + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
-                let endTime = date.getFullYear() + 2 + "-" + date.getMonth() + 1 + "-" + date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                let s = date.getFullYear() + "-" + (date.getMonth() + 1<10?"0"+(date.getMonth() + 1):date.getMonth() + 1) + "-" + date.getDate()<10?"0"+date.getDate():date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                let endTime = date.getFullYear() + 2 + "-" + (date.getMonth() + 1<10?"0"+(date.getMonth() + 1):date.getMonth() + 1) + "-" + date.getDate()<10?"0"+date.getDate():date.getDate() + " " + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
 
                 this.$router.push({
                     name: 'seeContract',
